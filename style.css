@@ -186,6 +186,84 @@ body {
     width: min(520px, 100%);
 }
 
+.page-content.is-locked {
+    filter: blur(16px);
+    opacity: 0.5;
+    pointer-events: none;
+    transform: scale(1.015);
+    user-select: none;
+}
+
+body.is-locked::before {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    content: "";
+}
+
+.entry-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    border: 0;
+    background: transparent;
+    color: #f5f5f7;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.entry-gate span {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 18px rgba(255, 255, 255, 0.22);
+    animation: entry-prompt 3s ease-in-out infinite;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.entry-gate:hover span,
+.entry-gate:focus-visible span {
+    color: rgba(255, 255, 255, 0.96);
+    text-shadow: 0 0 24px rgba(215, 228, 255, 0.62);
+}
+
+.entry-gate:focus-visible {
+    outline: none;
+}
+
+body.has-entered .page-content {
+    filter: none;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    transition:
+        filter 0.7s ease,
+        opacity 0.7s ease,
+        transform 0.7s ease;
+}
+
+body.has-entered::before {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.7s ease, visibility 0.7s;
+    visibility: hidden;
+}
+
+body.has-entered .entry-gate {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease, visibility 0.6s;
+}
+
 .page-content .profile {
     width: min(390px, 100%);
 }
@@ -454,16 +532,16 @@ body {
     stroke: none;
 }
 
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+.player-status {
+    display: none;
+    margin-top: 7px;
+    color: #d0cfc9;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.player-status.is-visible {
+    display: block;
 }
 
 
@@ -728,6 +806,16 @@ body {
 
     to {
         opacity: 1;
+    }
+}
+
+@keyframes entry-prompt {
+    0%, 100% {
+        opacity: 0.58;
+    }
+
+    50% {
+        opacity: 0.82;
     }
 }
 

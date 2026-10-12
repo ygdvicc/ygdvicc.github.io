@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="is-locked">
 
     <!-- Hình nền -->
     <div class="background"></div>
@@ -23,7 +23,7 @@
     <div class="rain rain-front"></div>
     <div class="fireflies" aria-hidden="true"></div>
 
-    <div class="page-content">
+    <div class="page-content is-locked">
       <main class="profile" aria-label="Hồ sơ của ygdvicc">
         <div class="avatar-wrapper">
             <div class="avatar-ring"></div>
@@ -139,10 +139,19 @@ Arcane Story Song of Hope - For your name by Edine | Arknights: Endfield 1.4 OST
                       </svg>
                   </button>
               </div>
-              <span id="player-status" class="visually-hidden" aria-live="polite"></span>
+              <span id="player-status" class="player-status" aria-live="polite"></span>
           </div>
       </section>
     </div>
+
+    <button
+        id="entry-gate"
+        class="entry-gate"
+        type="button"
+        aria-label="Bấm để xem hồ sơ và bật nhạc"
+    >
+        <span>Bấm để xem...</span>
+    </button>
 
     <!-- Nhạc nền -->
     <audio id="background-music" loop preload="metadata">

@@ -7,6 +7,7 @@ const progressBar = document.querySelector("#track-progress");
 const currentTimeDisplay = document.querySelector("#current-time");
 const durationDisplay = document.querySelector("#duration");
 const playerStatus = document.querySelector("#player-status");
+const entryGate = document.querySelector("#entry-gate");
 
 backgroundMusic.volume = 0.95;
 
@@ -84,6 +85,11 @@ function updatePlayButton() {
         : '<path d="m8 5 12 7-12 7V5Z" />';
 }
 
+function setPlayerStatus(message) {
+    playerStatus.textContent = message;
+    playerStatus.classList.toggle("is-visible", Boolean(message));
+}
+
 function updateProgress() {
     const duration = backgroundMusic.duration;
     const progress = Number.isFinite(duration) && duration > 0
@@ -111,6 +117,7 @@ function updateTrackAvailability() {
 }
 
 backgroundMusic.addEventListener("playing", updatePlayButton);
+backgroundMusic.addEventListener("playing", () => setPlayerStatus(""));
 backgroundMusic.addEventListener("pause", updatePlayButton);
 backgroundMusic.addEventListener("timeupdate", updateProgress);
 backgroundMusic.addEventListener("loadedmetadata", updateTrackAvailability);
@@ -120,7 +127,7 @@ backgroundMusic.addEventListener("error", () => {
         "Không thể tải file nhạc:",
         backgroundMusic.currentSrc || "assets/music.mp3"
     );
-    playerStatus.textContent = "Không thể tải nhạc. Hãy kiểm tra assets/music.mp3.";
+    setPlayerStatus("Không thể tải nhạc. Hãy kiểm tra assets/music.mp3.");
 });
 
 playToggle.addEventListener("click", async () => {
@@ -131,19 +138,52 @@ playToggle.addEventListener("click", async () => {
 
     try {
         await backgroundMusic.play();
-        playerStatus.textContent = "";
+        setPlayerStatus("");
     } catch (error) {
         if (error.name === "AbortError") {
             return;
         }
 
         if (error.name === "NotAllowedError") {
-            playerStatus.textContent = "Trình duyệt chặn tự phát. Hãy bấm nút phát nhạc.";
+            setPlayerStatus("Trình duyệt chặn tự phát. Hãy bấm nút phát nhạc.");
             return;
         }
 
         console.error("Không thể phát nhạc:", error);
-        playerStatus.textContent = "Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.";
+        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.");
+    }
+});
+
+entryGate.addEventListener("click", () => {
+    let playback;
+
+    try {
+        playback = backgroundMusic.play();
+    } catch (error) {
+        console.error("Không thể phát nhạc:", error);
+        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.");
+    }
+
+    document.body.classList.add("has-entered");
+    document.body.classList.remove("is-locked");
+    document.querySelector(".page-content").classList.remove("is-locked");
+
+    if (playback) {
+        playback.then(() => {
+            setPlayerStatus("");
+        }).catch((error) => {
+            if (error.name === "AbortError") {
+                return;
+            }
+
+            if (error.name === "NotAllowedError") {
+                setPlayerStatus("Trình duyệt chặn phát nhạc. Hãy bấm nút phát.");
+                return;
+            }
+
+            console.error("Không thể phát nhạc:", error);
+            setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.");
+        });
     }
 });
 
@@ -221,14 +261,3 @@ if (!reduceMotion) {
 updatePlayButton();
 updateTrackAvailability();
 updateProgress();
-
-backgroundMusic.play().catch((error) => {
-    if (error.name === "AbortError") {
-        return;
-    }
-
-    if (error.name !== "NotAllowedError") {
-        console.error("Không thể tự phát nhạc:", error);
-        playerStatus.textContent = "Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.";
-    }
-});
