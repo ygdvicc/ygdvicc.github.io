@@ -287,49 +287,59 @@ body.has-entered::before {
     border-radius: 14px;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.06));
     color: #f4f4f7;
+    transition: box-shadow 0.25s, background 0.25s;
 }
 
 .waveform {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 1.8px;
     width: 46px;
-    height: 38px;
+    height: 46px;
 }
 
 .waveform span {
-    flex: 0 0 2px;
-    height: 8px;
+    flex: 0 0 2.2px;
+    height: 7px;
     border-radius: 2px;
-    background: currentColor;
+    background: linear-gradient(to top, #b9c5ff, #fff);
+    box-shadow: 0 0 5px rgba(173, 188, 255, 0.45);
     transform: scaleY(var(--wave-height, 1));
     transform-origin: center;
 }
 
 .waveform span:nth-child(3n + 1) {
-    --wave-height: 0.55;
+    --wave-height: 3.2;
 }
 
 .waveform span:nth-child(4n + 2) {
-    --wave-height: 1.2;
+    --wave-height: 4.5;
 }
 
 .waveform span:nth-child(5n + 3) {
-    --wave-height: 1.8;
+    --wave-height: 5.6;
 }
 
 .waveform span:nth-child(7n + 4) {
-    --wave-height: 2.6;
+    --wave-height: 3.9;
 }
 
 .waveform span:nth-child(9n + 5) {
-    --wave-height: 3.6;
+    --wave-height: 5;
 }
 
 .audio-player.is-playing .waveform span {
-    animation: waveform-bounce 0.72s ease-in-out infinite alternate;
-    animation-delay: calc(var(--bar-index, 0) * -0.09s);
+    animation: waveform-bounce 0.42s ease-in-out infinite alternate;
+    animation-delay: calc(var(--bar-index, 0) * -0.055s);
+}
+
+.audio-player.is-playing .track-art {
+    background: linear-gradient(145deg, rgba(145, 157, 255, 0.25), rgba(255, 255, 255, 0.07));
+    box-shadow:
+        0 0 16px rgba(130, 147, 255, 0.28),
+        inset 0 0 12px rgba(202, 211, 255, 0.1);
+    animation: track-art-pulse 1s ease-in-out infinite alternate;
 }
 
 .waveform span:nth-child(1) { --bar-index: 1; }
@@ -350,11 +360,21 @@ body.has-entered::before {
 
 @keyframes waveform-bounce {
     from {
-        transform: scaleY(0.35);
+        transform: scaleY(0.22);
     }
 
     to {
         transform: scaleY(var(--wave-height, 1));
+    }
+}
+
+@keyframes track-art-pulse {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.055);
     }
 }
 
