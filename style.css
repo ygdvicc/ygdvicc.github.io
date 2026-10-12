@@ -1,3 +1,6 @@
+/* =========================
+   1. CÀI ĐẶT CHUNG
+========================= */
 
 * {
     margin: 0;
@@ -5,200 +8,909 @@
     box-sizing: border-box;
 }
 
+:root {
+    --accent: #78baff;
+    --text: #f4f7ff;
+    --muted: #c3d0e7;
+}
+
+html {
+    min-height: 100%;
+}
+
 body {
     min-height: 100vh;
+    min-height: 100svh;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px 15px;
-    background: #080812;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
+
+    padding: 40px 20px;
+
     overflow-x: hidden;
+
+    background: #071329;
+    color: var(--text);
+
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.background-glow {
+
+/* =========================
+   2. HÌNH NỀN
+========================= */
+
+.background {
     position: fixed;
-    width: 350px;
-    height: 350px;
-    background: #702cff;
-    filter: blur(150px);
-    opacity: 0.3;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
+    inset: 0;
+
+    z-index: -3;
+
+    background-color: #102a52;
+    background-image: url("assets/background.jpg");
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    transform: scale(1.03);
+
+    animation: background-move 30s ease-in-out infinite alternate;
+}
+
+.background-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: -2;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(14, 35, 77, 0.38) 0%,
+            rgba(12, 40, 91, 0.28) 45%,
+            rgba(0, 4, 16, 0.84) 100%
+        ),
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(71, 142, 255, 0.22),
+            transparent 65%
+        );
+}
+
+
+/* =========================
+   3. HIỆU ỨNG MƯA
+========================= */
+
+.rain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.rain-back {
+    opacity: 0.62;
+}
+
+.rain-front {
+    opacity: 0.9;
+}
+
+.raindrop {
+    position: absolute;
+    top: -30px;
+    left: var(--start-x);
+    width: var(--width);
+    height: var(--length);
+    border-radius: 50%;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(194, 222, 255, 0.3) 18%,
+        rgba(225, 241, 255, 0.95) 72%,
+        rgba(191, 220, 255, 0.2) 100%
+    );
+    box-shadow: 0 0 5px rgba(186, 220, 255, 0.34);
+    opacity: var(--drop-opacity);
+    transform: rotate(8deg);
+    animation: raindrop-fall var(--fall-duration) linear var(--fall-delay) infinite;
+    will-change: transform;
+}
+
+.rain-back .raindrop {
+    filter: blur(0.35px);
+}
+
+.rain-front .raindrop {
+    box-shadow: 0 0 7px rgba(203, 229, 255, 0.5);
+}
+
+.raindrop::after {
+    position: absolute;
+    right: -0.5px;
+    bottom: 0;
+    width: calc(var(--width) + 1px);
+    height: calc(var(--width) + 1px);
+    border-radius: 50%;
+    background: rgba(227, 241, 255, 0.9);
+    content: "";
+}
+
+
+/* =========================
+   4. ĐOM ĐÓM
+========================= */
+
+.fireflies {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
     pointer-events: none;
 }
 
-.profile-card {
+.firefly {
+    position: absolute;
+    left: var(--start-x);
+    top: var(--start-y);
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: #fff7a6;
+    opacity: 0;
+    box-shadow:
+        0 0 5px 2px rgba(255, 245, 151, 0.82),
+        0 0 14px 5px rgba(255, 199, 75, 0.52),
+        0 0 28px 9px rgba(255, 151, 54, 0.2);
+    animation:
+        firefly-drift var(--duration) linear var(--delay) infinite,
+        firefly-glow 2.4s ease-in-out var(--glow-delay) infinite alternate;
+}
+
+
+/* =========================
+   5. TRÌNH PHÁT NHẠC
+========================= */
+
+.page-content {
     position: relative;
-    width: 100%;
-    max-width: 500px;
-    padding: 35px 25px;
-    text-align: center;
-    background: rgba(20, 20, 38, 0.92);
-    border: 1px solid rgba(151, 102, 255, 0.5);
-    border-radius: 25px;
-    box-shadow: 0 0 35px rgba(112, 44, 255, 0.15);
-}
-
-.status {
-    display: inline-block;
-    padding: 9px 15px;
-    border: 1px solid #6c4cff;
-    border-radius: 20px;
-    font-size: 12px;
-    letter-spacing: 2px;
-    color: #c8b9ff;
-}
-
-.status-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    margin-right: 7px;
-    border-radius: 50%;
-    background: #9d7aff;
-    box-shadow: 0 0 10px #9d7aff;
-}
-
-.avatar {
-    display: block;
-    width: 125px;
-    height: 125px;
-    margin: 25px auto;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #a17aff;
-    box-shadow: 0 0 25px rgba(133, 82, 255, 0.6);
-}
-
-h1 {
-    font-size: clamp(25px, 6vw, 32px);
-    letter-spacing: 2px;
-    color: #d7c7ff;
-}
-
-.subtitle {
-    margin-top: 12px;
-    color: #aaa8c5;
-    font-size: 14px;
-}
-
-.level {
+    z-index: 1;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin: 25px 0;
-    padding: 15px;
-    background: #111120;
-    border-radius: 12px;
-    color: #aaa8c5;
+    gap: 14px;
+    width: min(520px, 100%);
 }
 
-.level strong {
-    font-size: 24px;
-    color: #b49aff;
+.page-content .profile {
+    width: min(390px, 100%);
 }
 
-.divider {
-    height: 1px;
-    margin: 25px 0;
-    background: linear-gradient(
-        to right,
-        transparent,
-        #8055ff,
-        transparent
-    );
-}
-
-h2 {
-    margin: 25px 0 18px;
-    font-size: 14px;
-    letter-spacing: 2px;
-    color: #bca5ff;
-}
-
-.games {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-}
-
-.game {
-    min-width: 0;
-    padding: 15px 5px;
-    background: #10101e;
-    border: 1px solid #292342;
-    border-radius: 12px;
-    transition: 0.25s;
-}
-
-.game:hover {
-    transform: translateY(-5px);
-    border-color: #a17aff;
-    box-shadow: 0 0 15px rgba(133, 82, 255, 0.2);
-}
-
-.game span {
-    font-size: 25px;
-}
-
-.game p {
-    margin-top: 10px;
-    font-size: 11px;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-
-.social-links {
+.audio-player {
     display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    min-height: 96px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 18px;
+    background: rgba(8, 9, 15, 0.86);
+    box-shadow:
+        0 18px 48px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.track-art {
+    flex: 0 0 64px;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.06));
+    color: #f4f4f7;
+}
+
+.waveform {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 2px;
+    width: 46px;
+    height: 38px;
 }
 
-.social-links a {
-    padding: 10px 18px;
-    text-decoration: none;
-    color: white;
-    border: 1px solid #7450d9;
-    border-radius: 10px;
-    transition: 0.25s;
+.waveform span {
+    flex: 0 0 2px;
+    height: 8px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: scaleY(var(--wave-height, 1));
+    transform-origin: center;
 }
 
-.social-links a:hover {
-    background: #7450d9;
-    box-shadow: 0 0 18px rgba(133, 82, 255, 0.4);
+.waveform span:nth-child(3n + 1) {
+    --wave-height: 0.55;
 }
 
-#music-button {
-    margin-top: 25px;
-    padding: 12px 20px;
+.waveform span:nth-child(4n + 2) {
+    --wave-height: 1.2;
+}
+
+.waveform span:nth-child(5n + 3) {
+    --wave-height: 1.8;
+}
+
+.waveform span:nth-child(7n + 4) {
+    --wave-height: 2.6;
+}
+
+.waveform span:nth-child(9n + 5) {
+    --wave-height: 3.6;
+}
+
+.audio-player.is-playing .waveform span {
+    animation: waveform-bounce 0.72s ease-in-out infinite alternate;
+    animation-delay: calc(var(--bar-index, 0) * -0.09s);
+}
+
+.waveform span:nth-child(1) { --bar-index: 1; }
+.waveform span:nth-child(2) { --bar-index: 2; }
+.waveform span:nth-child(3) { --bar-index: 3; }
+.waveform span:nth-child(4) { --bar-index: 4; }
+.waveform span:nth-child(5) { --bar-index: 5; }
+.waveform span:nth-child(6) { --bar-index: 6; }
+.waveform span:nth-child(7) { --bar-index: 7; }
+.waveform span:nth-child(8) { --bar-index: 8; }
+.waveform span:nth-child(9) { --bar-index: 9; }
+.waveform span:nth-child(10) { --bar-index: 10; }
+.waveform span:nth-child(11) { --bar-index: 11; }
+.waveform span:nth-child(12) { --bar-index: 12; }
+.waveform span:nth-child(13) { --bar-index: 13; }
+.waveform span:nth-child(14) { --bar-index: 14; }
+.waveform span:nth-child(15) { --bar-index: 15; }
+
+@keyframes waveform-bounce {
+    from {
+        transform: scaleY(0.35);
+    }
+
+    to {
+        transform: scaleY(var(--wave-height, 1));
+    }
+}
+
+.player-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 9px;
+}
+
+.track-title {
+    overflow: hidden;
+    color: #f5f3ef;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-artist {
+    flex: 0 0 auto;
+    color: #aaa9a7;
+    font-size: 11px;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.time-display {
+    flex: 0 0 auto;
+    color: #c4c3c0;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.track-progress {
+    flex: 1;
+    min-width: 28px;
+    height: 16px;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
     background: transparent;
-    color: #cdbaff;
-    border: 1px solid #7450d9;
-    border-radius: 10px;
     cursor: pointer;
 }
 
-#music-button:hover {
-    background: #251744;
+.track-progress::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(
+        to right,
+        #f2f0eb 0 var(--progress, 0%),
+        rgba(255, 255, 255, 0.34) var(--progress, 0%) 100%
+    );
 }
 
-footer {
-    margin-top: 30px;
-    color: #77758f;
-    font-size: 11px;
-    letter-spacing: 2px;
+.track-progress::-moz-range-track {
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.34);
 }
 
-@media (max-width: 380px) {
-    .profile-card {
-        padding: 25px 15px;
+.track-progress::-moz-range-progress {
+    height: 3px;
+    border-radius: 3px;
+    background: #f2f0eb;
+}
+
+.track-progress::-webkit-slider-thumb {
+    width: 9px;
+    height: 9px;
+    margin-top: -3px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 50%;
+    background: #f2f0eb;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.track-progress::-moz-range-thumb {
+    width: 9px;
+    height: 9px;
+    border: 0;
+    border-radius: 50%;
+    background: #f2f0eb;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.track-progress:hover::-webkit-slider-thumb,
+.track-progress:focus-visible::-webkit-slider-thumb,
+.track-progress:hover::-moz-range-thumb,
+.track-progress:focus-visible::-moz-range-thumb {
+    opacity: 1;
+}
+
+.player-button {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #e9e8e4;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.player-button:hover {
+    transform: scale(1.12);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.player-button:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.player-button:disabled:hover {
+    transform: none;
+    background: transparent;
+}
+
+.player-button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.player-button svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.play-button {
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.play-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.play-button svg path {
+    fill: currentColor;
+    stroke: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
+/* =========================
+   5. KHUNG PROFILE
+========================= */
+
+.profile {
+    position: relative;
+
+    width: min(390px, 100%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 40px 34px 38px;
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 24px;
+    background:
+        radial-gradient(ellipse at 50% 0, rgba(53, 63, 105, 0.12), transparent 58%),
+        rgba(8, 9, 15, 0.88);
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.52),
+        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+    text-align: center;
+
+    transform:
+        perspective(1000px)
+        rotateX(var(--tilt-y, 0deg))
+        rotateY(var(--tilt-x, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 180ms ease-out;
+
+    animation: profile-appear 1.2s ease both;
+}
+
+
+/* =========================
+   6. ẢNH ĐẠI DIỆN
+========================= */
+
+.avatar-wrapper {
+    position: relative;
+
+    width: 126px;
+    height: 126px;
+
+    margin-bottom: 24px;
+}
+
+.avatar-ring {
+    position: absolute;
+
+    inset: -5px;
+
+    border: 2px solid rgba(112, 128, 255, 0.75);
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 12px rgba(91, 103, 255, 0.55),
+        0 0 30px rgba(91, 103, 255, 0.25);
+
+    animation: ring-glow 3s ease-in-out infinite alternate;
+}
+
+.avatar {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+
+    background: #172b4b;
+}
+
+.name-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.profile h1 {
+    color: #f4f7ff;
+
+    font-size: clamp(30px, 7vw, 36px);
+    font-weight: 600;
+
+    letter-spacing: -0.8px;
+
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.7),
+        0 0 22px rgba(255, 255, 255, 0.24);
+}
+
+.profile-badges {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #7168ff;
+}
+
+.profile-badges svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 7px rgba(107, 97, 255, 0.5));
+}
+
+.profile-badges svg:nth-child(2) path:first-child {
+    fill: currentColor;
+    stroke: none;
+}
+
+.profile-badges svg:nth-child(2) path:last-child {
+    stroke: #0c0d14;
+}
+
+.profile-caption {
+    margin-top: 8px;
+    color: #a9a9b5;
+    font-size: 13px;
+}
+
+.profile-message {
+    margin-top: 8px;
+    color: #f5f5f7;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.description {
+    max-width: 100%;
+
+    margin-top: 6px;
+
+    color: #bdbdc7;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+
+/* =========================
+   8. MẠNG XÃ HỘI
+========================= */
+
+.socials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 24px;
+
+    margin-top: 35px;
+}
+
+.socials a {
+    display: grid;
+    place-items: center;
+
+    width: 38px;
+    height: 38px;
+
+    color: #f4f4f7;
+
+    text-decoration: none;
+
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+
+    transition:
+        color 0.25s,
+        transform 0.25s,
+        filter 0.25s;
+}
+
+.socials svg {
+    display: block;
+
+    width: 36px;
+    height: 36px;
+}
+
+.socials a:first-child {
+    color: #5865f2;
+}
+
+.socials a:first-child svg path {
+    fill: currentColor;
+}
+
+.socials a:nth-child(2) {
+    color: #ff147b;
+}
+
+.socials a:nth-child(2) svg rect,
+.socials a:nth-child(2) svg circle:not(.instagram-dot) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.socials a:nth-child(2) svg .instagram-dot {
+    fill: currentColor;
+}
+
+.socials a:nth-child(3) {
+    color: #1ed760;
+}
+
+.socials .spotify-disc {
+    fill: currentColor;
+}
+
+.socials a:nth-child(3) svg path {
+    fill: none;
+    stroke: #0b1010;
+    stroke-linecap: round;
+    stroke-width: 1.7;
+}
+
+.socials a:hover {
+    color: #fff;
+
+    transform: translateY(-5px);
+
+    filter:
+        drop-shadow(0 0 5px rgba(255, 255, 255, 0.6))
+        drop-shadow(0 0 12px rgba(80, 160, 255, 0.8));
+}
+
+.socials a:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 5px;
+    border-radius: 5px;
+}
+
+
+/* =========================
+   9. HIỆU ỨNG CHUYỂN ĐỘNG
+========================= */
+
+@keyframes profile-appear {
+    from {
+        opacity: 0;
     }
 
-    .games {
-        grid-template-columns: 1fr;
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ring-glow {
+    from {
+        filter: hue-rotate(0deg);
+        box-shadow:
+            0 0 10px rgba(72, 157, 255, 0.65),
+            0 0 22px rgba(72, 157, 255, 0.3);
+    }
+
+    to {
+        filter: hue-rotate(25deg);
+        box-shadow:
+            0 0 15px rgba(72, 157, 255, 0.95),
+            0 0 35px rgba(72, 157, 255, 0.6);
+    }
+}
+
+@keyframes raindrop-fall {
+    from {
+        transform: translate3d(0, -30px, 0) rotate(8deg);
+    }
+
+    to {
+        transform: translate3d(var(--drift), calc(100vh + 60px), 0) rotate(8deg);
+    }
+}
+
+@keyframes firefly-drift {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0);
+    }
+
+    12% {
+        opacity: 0.95;
+    }
+
+    82% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(var(--travel-x), var(--travel-y), 0);
+    }
+}
+
+@keyframes firefly-glow {
+    from {
+        filter: brightness(0.7);
+    }
+
+    to {
+        filter: brightness(1.5);
+    }
+}
+
+@keyframes background-move {
+    from {
+        transform:
+            translate3d(var(--pointer-x, 0px), var(--pointer-y, 0px), 0)
+            scale(var(--pointer-scale, 1))
+            scale(1.03)
+            translateX(0);
+    }
+
+    to {
+        transform:
+            translate3d(var(--pointer-x, 0px), var(--pointer-y, 0px), 0)
+            scale(var(--pointer-scale, 1))
+            scale(1.1)
+            translateX(-1%);
+    }
+}
+
+
+/* =========================
+   10. GIAO DIỆN ĐIỆN THOẠI
+========================= */
+
+@media (max-width: 480px) {
+    body {
+        padding: 35px 22px;
+    }
+
+    .profile {
+        padding: 34px 24px 32px;
+    }
+
+    .audio-player {
+        gap: 11px;
+        min-height: 84px;
+        padding: 11px;
+    }
+
+    .track-art {
+        flex-basis: 48px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .waveform {
+        gap: 1.5px;
+        width: 38px;
+    }
+
+    .waveform span {
+        flex-basis: 1.8px;
+    }
+
+    .track-heading {
+        margin-bottom: 6px;
+    }
+
+    .track-title {
+        font-size: 13px;
+    }
+
+    .track-artist {
+        display: none;
+    }
+
+    .player-controls {
+        gap: 5px;
+    }
+
+    .time-display {
+        font-size: 10px;
+    }
+
+    .player-button {
+        width: 25px;
+        height: 28px;
+    }
+
+    .play-button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .avatar-wrapper {
+        width: 108px;
+        height: 108px;
+
+        margin-bottom: 21px;
+    }
+
+    .profile h1 {
+        font-size: 31px;
+    }
+
+    .description {
+        font-size: 12px;
+    }
+
+    .socials {
+        gap: 23px;
+        margin-top: 31px;
+    }
+
+    .socials a {
+        width: 32px;
+        height: 32px;
+    }
+
+    .socials svg {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+
+/* =========================
+   11. HẠN CHẾ CHUYỂN ĐỘNG
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
     }
 }
