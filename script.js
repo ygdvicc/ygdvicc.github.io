@@ -125,9 +125,9 @@ backgroundMusic.addEventListener("durationchange", updateTrackAvailability);
 backgroundMusic.addEventListener("error", () => {
     console.error(
         "Không thể tải file nhạc:",
-        backgroundMusic.currentSrc || "assets/music.mp3"
+        backgroundMusic.currentSrc || "assets/ヨルシカ - 言って。(Music Video).mp3"
     );
-    setPlayerStatus("Không thể tải nhạc. Hãy kiểm tra assets/music.mp3.");
+    setPlayerStatus("Không thể tải nhạc. Hãy kiểm tra tệp nhạc trong assets.");
 });
 
 playToggle.addEventListener("click", async () => {
@@ -150,7 +150,7 @@ playToggle.addEventListener("click", async () => {
         }
 
         console.error("Không thể phát nhạc:", error);
-        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.");
+        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra tệp nhạc trong assets.");
     }
 });
 
@@ -163,7 +163,7 @@ entryGate.addEventListener("click", () => {
         playback = backgroundMusic.play();
     } catch (error) {
         console.error("Không thể phát nhạc:", error);
-        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.");
+        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra tệp nhạc trong assets.");
     }
 
     document.body.classList.add("has-entered");
@@ -185,7 +185,7 @@ entryGate.addEventListener("click", () => {
             }
 
             console.error("Không thể phát nhạc:", error);
-            setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra file assets/music.mp3.");
+            setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra tệp nhạc trong assets.");
         });
     }
 });
