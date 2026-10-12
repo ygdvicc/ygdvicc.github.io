@@ -257,13 +257,6 @@ body.has-entered::before {
     visibility: hidden;
 }
 
-body.has-entered .entry-gate {
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease, visibility 0.6s;
-}
-
 .page-content .profile {
     width: min(390px, 100%);
 }
