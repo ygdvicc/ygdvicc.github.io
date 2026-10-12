@@ -157,6 +157,8 @@ playToggle.addEventListener("click", async () => {
 entryGate.addEventListener("click", () => {
     let playback;
 
+    entryGate.blur();
+
     try {
         playback = backgroundMusic.play();
     } catch (error) {
@@ -167,6 +169,7 @@ entryGate.addEventListener("click", () => {
     document.body.classList.add("has-entered");
     document.body.classList.remove("is-locked");
     document.querySelector(".page-content").classList.remove("is-locked");
+    entryGate.remove();
 
     if (playback) {
         playback.then(() => {
