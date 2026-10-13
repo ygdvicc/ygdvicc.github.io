@@ -1106,6 +1106,12 @@ body {
     font-weight: 600;
 }
 
+.playlist-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .playlist-loop {
     display: flex;
     align-items: center;
@@ -1123,6 +1129,123 @@ body {
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.6;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.volume-toggle {
+    display: grid;
+    flex: 0 0 26px;
+    place-items: center;
+    width: 26px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(229, 235, 249, 0.72);
+    cursor: pointer;
+}
+
+.volume-toggle:hover,
+.volume-toggle:focus-visible {
+    color: #fff;
+}
+
+.volume-toggle:focus-visible {
+    outline: 2px solid rgba(180, 190, 255, 0.75);
+    outline-offset: 2px;
+}
+
+.volume-toggle svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+.volume-mute {
+    display: none;
+}
+
+.volume-toggle.is-muted .volume-wave {
+    display: none;
+}
+
+.volume-toggle.is-muted .volume-mute {
+    display: block;
+}
+
+.volume-slider {
+    width: 0;
+    height: 16px;
+    margin: 0;
+    overflow: hidden;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: width 0.2s ease, opacity 0.2s ease, margin 0.2s ease;
+}
+
+.volume-control:hover .volume-slider,
+.volume-control:focus-within .volume-slider {
+    width: 82px;
+    margin-left: 5px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(
+        to right,
+        #dce2ff 0 var(--volume, 50%),
+        rgba(255, 255, 255, 0.3) var(--volume, 50%) 100%
+    );
+}
+
+.volume-slider::-moz-range-track {
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.volume-slider::-moz-range-progress {
+    height: 3px;
+    border-radius: 3px;
+    background: #dce2ff;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    width: 9px;
+    height: 9px;
+    margin-top: -3px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 9px;
+    height: 9px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
 }
 
 .track-list {
@@ -1293,6 +1416,15 @@ body {
 
     .playlist-heading {
         margin-bottom: 10px;
+    }
+
+    .playlist-actions {
+        gap: 9px;
+    }
+
+    .volume-control:hover .volume-slider,
+    .volume-control:focus-within .volume-slider {
+        width: 64px;
     }
 
     .track-list {

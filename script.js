@@ -4,15 +4,57 @@ const profileCard = document.querySelector(".profile");
 const playerStatus = document.querySelector("#player-status");
 const trackList = document.querySelector(".track-list");
 const entryGate = document.querySelector("#entry-gate");
+const volumeToggle = document.querySelector("#volume-toggle");
+const volumeSlider = document.querySelector("#volume-slider");
 let trackCards = [];
 let tracks = [];
+let lastVolume = 0.5;
 
 let currentTrackIndex = 0;
 let isSeeking = false;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-backgroundMusic.volume = 0.95;
+backgroundMusic.volume = 0.5;
 backgroundMusic.preload = "none";
+
+function updateVolumeControl() {
+    const volumePercent = Math.round(backgroundMusic.volume * 100);
+    const isMuted = backgroundMusic.muted || backgroundMusic.volume === 0;
+
+    volumeToggle.classList.toggle("is-muted", isMuted);
+    volumeToggle.setAttribute("aria-pressed", String(backgroundMusic.muted));
+    volumeToggle.setAttribute("aria-label", backgroundMusic.muted ? "Bật tiếng" : "Tắt tiếng");
+    volumeSlider.value = String(volumePercent);
+    volumeSlider.setAttribute("aria-valuetext", `${volumePercent}%`);
+    volumeSlider.style.setProperty("--volume", `${volumePercent}%`);
+}
+
+volumeToggle.addEventListener("click", () => {
+    if (backgroundMusic.muted || backgroundMusic.volume === 0) {
+        if (backgroundMusic.volume === 0) {
+            backgroundMusic.volume = lastVolume || 0.5;
+        }
+        backgroundMusic.muted = false;
+    } else {
+        lastVolume = backgroundMusic.volume;
+        backgroundMusic.muted = true;
+    }
+
+    updateVolumeControl();
+});
+
+volumeSlider.addEventListener("input", () => {
+    backgroundMusic.volume = Number(volumeSlider.value) / 100;
+    backgroundMusic.muted = false;
+
+    if (backgroundMusic.volume > 0) {
+        lastVolume = backgroundMusic.volume;
+    }
+
+    updateVolumeControl();
+});
+
+updateVolumeControl();
 
 const canTrackPointer = window.matchMedia(
     "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)"

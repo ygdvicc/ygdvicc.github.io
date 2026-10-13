@@ -96,14 +96,26 @@
           <div class="playlist-heading">
               <div>
                   <p class="playlist-eyebrow">NOW PLAYING</p>
-                  <h2>My playlist</h2>
+                  <h2>nghe mệt</h2>
               </div>
-              <span class="playlist-loop" aria-label="Tự động phát lại danh sách">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3" />
-                  </svg>
-                  <span>LOOP</span>
-              </span>
+              <div class="playlist-actions">
+                  <span class="playlist-loop" aria-label="Tự động phát lại danh sách">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3" />
+                      </svg>
+                      <span>LOOP</span>
+                  </span>
+                  <div class="volume-control">
+                      <button id="volume-toggle" class="volume-toggle" type="button" aria-label="Tắt tiếng" aria-pressed="false" aria-controls="volume-slider">
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path class="volume-speaker" d="M3 9v6h4l5 4V5L7 9H3Z" />
+                              <path class="volume-wave" d="M16 9a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" />
+                              <path class="volume-mute" d="m16 9 5 6m0-6-5 6" />
+                          </svg>
+                      </button>
+                      <input id="volume-slider" class="volume-slider" type="range" min="0" max="100" value="50" aria-label="Âm lượng" aria-valuetext="50%">
+                  </div>
+              </div>
           </div>
 
           <div class="track-list"></div>
