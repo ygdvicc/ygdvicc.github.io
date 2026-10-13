@@ -239,6 +239,15 @@ body.is-locked::before {
     outline: none;
 }
 
+.entry-gate:disabled {
+    cursor: wait;
+}
+
+.entry-gate:disabled span {
+    animation-play-state: paused;
+    opacity: 0.8;
+}
+
 body.has-entered .page-content {
     filter: none;
     opacity: 1;

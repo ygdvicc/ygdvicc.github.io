@@ -3,6 +3,7 @@ const background = document.querySelector(".background");
 const profileCard = document.querySelector(".profile");
 const playerStatus = document.querySelector("#player-status");
 const trackList = document.querySelector(".track-list");
+const entryGate = document.querySelector("#entry-gate");
 let trackCards = [];
 let tracks = [];
 
@@ -189,6 +190,11 @@ function updateTrackCards() {
 }
 
 async function playTrack(index, { scroll = false } = {}) {
+    if (!tracks[index]) {
+        setPlayerStatus("Không có bài nhạc để phát. Hãy kiểm tra tệp assets/playlist.json.");
+        return;
+    }
+
     currentTrackIndex = index;
     isSeeking = false;
     setPlayerStatus("");
@@ -228,31 +234,112 @@ async function playTrack(index, { scroll = false } = {}) {
     updateTrackCards();
 }
 
-trackCards.forEach((card, index) => {
-    card.querySelector(".play-button").addEventListener("click", () => {
-        if (index === currentTrackIndex && !backgroundMusic.paused) {
-            backgroundMusic.pause();
-            return;
-        }
+trackList.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) {
+        return;
+    }
 
-        void playTrack(index);
-    });
+    const playButton = event.target.closest(".play-button");
+    if (!playButton) {
+        return;
+    }
 
-    card.querySelector(".track-progress").addEventListener("input", (event) => {
-        if (index !== currentTrackIndex || !Number.isFinite(backgroundMusic.duration)) {
-            return;
-        }
+    const card = playButton.closest(".audio-player");
+    const index = Number(card?.dataset.trackIndex);
+    if (!Number.isInteger(index) || !tracks[index]) {
+        return;
+    }
 
-        isSeeking = true;
-        backgroundMusic.currentTime = Number(event.currentTarget.value);
-        updateTrackCards();
-    });
+    if (index === currentTrackIndex && !backgroundMusic.paused) {
+        backgroundMusic.pause();
+        return;
+    }
 
-    card.querySelector(".track-progress").addEventListener("change", () => {
-        isSeeking = false;
-        updateTrackCards();
-    });
+    void playTrack(index);
 });
+
+trackList.addEventListener("input", (event) => {
+    if (!(event.target instanceof HTMLInputElement) || !event.target.matches(".track-progress")) {
+        return;
+    }
+
+    const card = event.target.closest(".audio-player");
+    const index = Number(card?.dataset.trackIndex);
+    if (index !== currentTrackIndex || !Number.isFinite(backgroundMusic.duration)) {
+        return;
+    }
+
+    isSeeking = true;
+    backgroundMusic.currentTime = Number(event.target.value);
+    updateTrackCards();
+});
+
+trackList.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLInputElement) || !event.target.matches(".track-progress")) {
+        return;
+    }
+
+    isSeeking = false;
+    updateTrackCards();
+});
+
+entryGate.addEventListener("click", () => {
+    entryGate.blur();
+    document.body.classList.add("has-entered");
+    document.body.classList.remove("is-locked");
+    document.querySelector(".page-content").classList.remove("is-locked");
+    entryGate.remove();
+
+    if (tracks.length > 0) {
+        void playTrack(currentTrackIndex);
+    }
+});
+
+async function loadPlaylist() {
+    entryGate.disabled = true;
+
+    try {
+        const playlistUrl = new URL("assets/playlist.json", document.baseURI);
+        const response = await fetch(playlistUrl);
+        if (!response.ok) {
+            throw new Error(`Không tải được playlist (HTTP ${response.status}).`);
+        }
+
+        const playlist = await response.json();
+        if (!Array.isArray(playlist) || playlist.length === 0) {
+            throw new Error("Playlist phải là một danh sách có ít nhất một bài nhạc.");
+        }
+
+        tracks = playlist.map((track, index) => {
+            if (
+                !track
+                || typeof track.title !== "string"
+                || !track.title.trim()
+                || typeof track.src !== "string"
+                || !track.src.trim()
+            ) {
+                throw new Error(`Bài nhạc thứ ${index + 1} cần có title và src hợp lệ.`);
+            }
+
+            return {
+                title: track.title.trim(),
+                src: new URL(track.src, playlistUrl).href,
+            };
+        });
+
+        trackCards = tracks.map(createTrackCard);
+        trackList.replaceChildren(...trackCards);
+        updateTrackCards();
+    } catch (error) {
+        console.error("Không thể tải playlist:", error);
+        setPlayerStatus("Không thể tải danh sách nhạc. Hãy kiểm tra tệp assets/playlist.json.");
+    } finally {
+        entryGate.disabled = false;
+    }
+}
+
+entryGate.disabled = true;
+void loadPlaylist();
 
 backgroundMusic.addEventListener("playing", updateTrackCards);
 backgroundMusic.addEventListener("pause", updateTrackCards);
@@ -315,44 +402,3 @@ if (!reduceMotion) {
         fireflies.append(firefly);
     }
 }
-
-async function loadPlaylist() {
-    try {
-        const playlistUrl = new URL("assets/playlist.json", document.baseURI);
-        const response = await fetch(playlistUrl);
-        if (!response.ok) {
-            throw new Error(`Không tải được playlist (HTTP ${response.status}).`);
-        }
-
-        const playlist = await response.json();
-        if (!Array.isArray(playlist) || playlist.length === 0) {
-            throw new Error("Playlist phải là một danh sách có ít nhất một bài nhạc.");
-        }
-
-        tracks = playlist.map((track, index) => {
-            if (
-                !track
-                || typeof track.title !== "string"
-                || !track.title.trim()
-                || typeof track.src !== "string"
-                || !track.src.trim()
-            ) {
-                throw new Error(`Bài nhạc thứ ${index + 1} cần có title và src hợp lệ.`);
-            }
-
-            return {
-                title: track.title.trim(),
-                src: new URL(track.src, playlistUrl).href,
-            };
-        });
-
-        trackCards = tracks.map(createTrackCard);
-        trackList.replaceChildren(...trackCards);
-        updateTrackCards();
-    } catch (error) {
-        console.error("Không thể tải playlist:", error);
-        setPlayerStatus("Không thể tải danh sách nhạc. Hãy kiểm tra tệp assets/playlist.json.");
-    }
-}
-
-void loadPlaylist();

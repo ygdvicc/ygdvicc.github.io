@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="is-locked">
 
     <!-- Hình nền -->
     <div class="background"></div>
@@ -24,7 +24,7 @@
     <div class="rain rain-front"></div>
     <div class="fireflies" aria-hidden="true"></div>
 
-    <div class="page-content">
+    <div class="page-content is-locked">
       <main class="profile" aria-label="Hồ sơ của ygdvicc">
         <div class="avatar-wrapper">
             <div class="avatar-ring"></div>
@@ -110,6 +110,10 @@
           <p id="player-status" class="player-status" aria-live="polite"></p>
       </section>
     </div>
+
+    <button id="entry-gate" class="entry-gate" type="button" disabled>
+        <span>Bấm để xem...</span>
+    </button>
 
     <!-- Nhạc nền -->
     <audio id="background-music" preload="none"></audio>
