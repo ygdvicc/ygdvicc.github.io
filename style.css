@@ -1015,3 +1015,409 @@ body.has-entered::before {
         transition: none !important;
     }
 }
+
+/* Playlist layout */
+body {
+    display: block;
+    min-height: 100svh;
+    padding: 20px;
+}
+
+.page-content {
+    display: grid;
+    grid-template-columns: minmax(230px, 0.7fr) minmax(0, 1.3fr);
+    align-items: start;
+    gap: clamp(28px, 7vw, 88px);
+    width: min(1120px, 100%);
+    min-height: calc(100svh - 40px);
+    margin: 0 auto;
+}
+
+.page-content .profile {
+    position: sticky;
+    top: 20px;
+    display: flex;
+    width: 100%;
+    height: calc(100svh - 40px);
+    min-height: 310px;
+    justify-content: center;
+    padding: 24px;
+    border-radius: 17px;
+}
+
+.avatar-wrapper {
+    width: 112px;
+    height: 112px;
+    margin-bottom: 16px;
+}
+
+.profile h1 {
+    font-size: 27px;
+}
+
+.profile-caption {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+.socials {
+    gap: 17px;
+    margin-top: 22px;
+}
+
+.socials a,
+.socials svg {
+    width: 27px;
+    height: 27px;
+}
+
+.playlist {
+    min-width: 0;
+    padding: 12px 0 48px;
+}
+
+.playlist-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px 0 18px;
+}
+
+.playlist-eyebrow {
+    margin-bottom: 4px;
+    color: rgba(221, 229, 245, 0.56);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+}
+
+.playlist-heading h2 {
+    color: #f4f6fc;
+    font-size: clamp(18px, 2.5vw, 23px);
+    font-weight: 600;
+}
+
+.playlist-loop {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: rgba(229, 235, 249, 0.65);
+    font-size: 9px;
+    letter-spacing: 0.13em;
+}
+
+.playlist-loop svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+}
+
+.track-list {
+    display: grid;
+    gap: 17px;
+}
+
+.audio-player {
+    min-height: 74px;
+    gap: 14px;
+    padding: 11px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    background: rgba(8, 10, 17, 0.92);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.26);
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+}
+
+.audio-player.is-active {
+    border-color: rgba(163, 161, 255, 0.42);
+    background: rgba(11, 13, 23, 0.96);
+}
+
+.audio-player.is-playing {
+    transform: translateY(-1px);
+}
+
+.track-art {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+}
+
+.waveform {
+    gap: 1.3px;
+    width: 31px;
+    height: 31px;
+}
+
+.waveform span {
+    flex-basis: 1.7px;
+}
+
+.track-title {
+    display: block;
+    margin-bottom: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.player-controls {
+    gap: 7px;
+}
+
+.time-display {
+    color: rgba(220, 223, 235, 0.66);
+    font-size: 9px;
+}
+
+.track-progress {
+    height: 12px;
+}
+
+.track-progress::-webkit-slider-runnable-track {
+    height: 2px;
+}
+
+.track-progress::-moz-range-track,
+.track-progress::-moz-range-progress {
+    height: 2px;
+}
+
+.track-progress::-webkit-slider-thumb {
+    width: 7px;
+    height: 7px;
+    margin-top: -2.5px;
+}
+
+.track-progress::-moz-range-thumb {
+    width: 7px;
+    height: 7px;
+}
+
+.player-button {
+    width: 22px;
+    height: 22px;
+    color: #d9dce8;
+}
+
+.play-button {
+    width: 27px;
+    height: 27px;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.player-button svg,
+.play-button svg {
+    width: 14px;
+    height: 14px;
+}
+
+.track-repeat {
+    flex: 0 0 auto;
+    color: rgba(222, 225, 237, 0.65);
+    font-size: 16px;
+    line-height: 1;
+}
+
+.player-status {
+    margin: 12px 3px 0;
+    color: #ffccd0;
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
+
+    .page-content {
+        grid-template-columns: minmax(136px, 0.55fr) minmax(0, 1fr);
+        gap: 24px;
+        min-height: calc(100svh - 24px);
+    }
+
+    .page-content .profile {
+        top: 12px;
+        height: calc(100svh - 24px);
+        min-height: 0;
+        padding: 12px 8px;
+    }
+
+    .avatar-wrapper {
+        width: 58px;
+        height: 58px;
+        margin-bottom: 12px;
+    }
+
+    .profile h1 {
+        font-size: 20px;
+    }
+
+    .profile-badges svg {
+        width: 13px;
+        height: 13px;
+    }
+
+    .profile-caption {
+        font-size: 9px;
+    }
+
+    .socials {
+        gap: 12px;
+        margin-top: 15px;
+    }
+
+    .socials a,
+    .socials svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .playlist {
+        padding-top: 3px;
+    }
+
+    .playlist-heading {
+        margin-bottom: 10px;
+    }
+
+    .track-list {
+        gap: 10px;
+    }
+
+    .audio-player {
+        min-height: 60px;
+        gap: 9px;
+        padding: 8px;
+    }
+
+    .track-art {
+        flex-basis: 34px;
+        width: 34px;
+        height: 34px;
+    }
+
+    .waveform {
+        transform: scale(0.8);
+    }
+
+    .track-title {
+        font-size: 10px;
+    }
+
+    .player-controls {
+        gap: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
+    .page-content {
+        grid-template-columns: minmax(0, 1fr);
+        align-content: start;
+        gap: 16px;
+        min-height: calc(100svh - 24px);
+    }
+
+    .page-content .profile {
+        z-index: 2;
+        top: 12px;
+        flex-direction: row;
+        height: 92px;
+        min-height: 0;
+        justify-content: flex-start;
+        padding: 10px 16px;
+        border-radius: 14px;
+        text-align: left;
+    }
+
+    .avatar-wrapper {
+        flex: 0 0 52px;
+        width: 52px;
+        height: 52px;
+        margin: 0 13px 0 0;
+    }
+
+    .avatar-ring {
+        inset: -3px;
+        border-width: 1.5px;
+    }
+
+    .name-line {
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+    .profile h1 {
+        font-size: 20px;
+    }
+
+    .profile-badges {
+        gap: 2px;
+    }
+
+    .profile-badges svg {
+        width: 13px;
+        height: 13px;
+    }
+
+    .profile-caption {
+        margin-top: 3px;
+        font-size: 10px;
+    }
+
+    .socials {
+        gap: 11px;
+        margin: 0 0 0 auto;
+    }
+
+    .socials a,
+    .socials svg {
+        width: 23px;
+        height: 23px;
+    }
+
+    .playlist {
+        padding-top: 6px;
+    }
+
+    .playlist-heading {
+        margin-bottom: 12px;
+    }
+
+    .track-list {
+        gap: 11px;
+    }
+
+    .audio-player {
+        min-height: 68px;
+        gap: 10px;
+        padding: 9px;
+    }
+
+    .track-art {
+        flex-basis: 37px;
+        width: 37px;
+        height: 37px;
+    }
+
+    .waveform {
+        transform: scale(0.86);
+    }
+
+    .track-title {
+        font-size: 11px;
+    }
+
+    .player-controls {
+        gap: 5px;
+    }
+}
