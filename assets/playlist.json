@@ -1,5 +1,9 @@
 [
     {
+        "title": "DUY MẠNH KHEN ANH ĐI EM ƠI",
+        "src": "DUY MẠNH KHEN ANH ĐI EM ƠI OFFICIAL MUSIC VIDEO.mp3"
+    },
+    {
         "title": "ヨルシカ - 言って。(Music Video)",
         "src": "./ヨルシカ - 言って。(Music Video).mp3"
     },
@@ -26,9 +30,6 @@
     {
         "title": "Arknights Endfield EP - Tangtang [A Promise Makes a Home]",
         "src": "Arknights Endfield EP - Tangtang [A Promise Makes a Home].mp3"
-    },
-    {
-        "title": "DUY MẠNH KHEN ANH ĐI EM ƠI",
-        "src": "DUY MẠNH KHEN ANH ĐI EM ƠI OFFICIAL MUSIC VIDEO.mp3"
     }
+    
 ]
