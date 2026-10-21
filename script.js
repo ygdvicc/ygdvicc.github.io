@@ -271,6 +271,7 @@ async function playTrack(index, { scroll = false } = {}) {
 
         console.error("Không thể phát nhạc:", error);
         setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra tệp nhạc trong assets.");
+        return;
     }
 
     updateTrackCards();
@@ -325,16 +326,20 @@ trackList.addEventListener("change", (event) => {
     updateTrackCards();
 });
 
-entryGate.addEventListener("click", () => {
+function enterPage() {
     entryGate.blur();
     document.body.classList.add("has-entered");
     document.body.classList.remove("is-locked");
     document.querySelector(".page-content").classList.remove("is-locked");
     entryGate.remove();
+}
 
+entryGate.addEventListener("click", () => {
     if (tracks.length > 0) {
         void playTrack(currentTrackIndex);
     }
+
+    enterPage();
 });
 
 async function loadPlaylist() {
@@ -365,7 +370,10 @@ async function loadPlaylist() {
 
             return {
                 title: track.title.trim(),
-                src: new URL(track.src, playlistUrl).href,
+                src: new URL(
+                    track.src.split("/").map(encodeURIComponent).join("/"),
+                    playlistUrl
+                ).href,
             };
         });
 

@@ -15,6 +15,8 @@
 
 `src` là tên file MP3 trong cùng thư mục `assets`. Giữ dấu phẩy giữa các mục
 trong danh sách JSON, nhưng không thêm dấu phẩy sau mục cuối cùng.
+Có thể ghi tên file bình thường, kể cả dấu cách hoặc ký tự `%`; trình phát sẽ
+tự mã hóa tên file khi tạo URL.
 Sau khi đẩy cả file MP3 và `playlist.json` lên Git, bài mới sẽ xuất hiện trên web.
 
 Playlist được tải bằng HTTP(S); hãy dùng GitHub Pages hoặc máy chủ web cục bộ
