@@ -1458,6 +1458,8 @@ body {
 
 @media (max-width: 480px) {
     body {
+        width: 100%;
+        overflow-x: hidden;
         padding: 12px;
     }
 
@@ -1465,6 +1467,7 @@ body {
         grid-template-columns: minmax(0, 1fr);
         align-content: start;
         gap: 16px;
+        width: 100%;
         min-height: calc(100svh - 24px);
     }
 
@@ -1530,18 +1533,51 @@ body {
         padding-top: 6px;
     }
 
+    .playlist {
+        width: 100%;
+        overflow: hidden;
+    }
+
     .playlist-heading {
+        min-width: 0;
         margin-bottom: 12px;
     }
 
+    .playlist-heading > div:first-child {
+        min-width: 0;
+        max-width: calc(100% - 110px);
+    }
+
+    .playlist-heading h2 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .playlist-actions {
+        flex: 0 0 auto;
+        gap: 6px;
+    }
+
+    .volume-control:hover .volume-slider,
+    .volume-control:focus-within .volume-slider {
+        display: none;
+    }
+
     .track-list {
+        width: 100%;
+        max-width: 100%;
         gap: 11px;
+        overflow: hidden;
     }
 
     .audio-player {
+        min-width: 0;
+        max-width: 100%;
         min-height: 68px;
         gap: 10px;
         padding: 9px;
+        overflow: hidden;
     }
 
     .track-art {
@@ -1554,11 +1590,25 @@ body {
         transform: scale(0.86);
     }
 
+    .player-content {
+        min-width: 0;
+        max-width: 100%;
+    }
+
     .track-title {
+        max-width: 100%;
         font-size: 11px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .player-controls {
-        gap: 5px;
+        min-width: 0;
+        gap: 4px;
+    }
+
+    .player-controls .track-progress {
+        min-width: 18px;
     }
 }
