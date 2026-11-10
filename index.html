@@ -1,133 +1,284 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
     <meta name="theme-color" content="#071329">
-    <meta name="description" content="Welcome to ygdvicc's profile.">
+    <meta name="description" content="ygdvicc // Space & Music Deck">
 
-    <title>ygdvicc</title>
+    <title>ygdvicc // Space & Music</title>
 
     <link rel="icon" type="image/gif" href="./assets/favicon.gif?v=2">
+
+    <!-- Fonts: Inter & Outfit cho cảm giác mềm mại, hiện đại -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="is-locked">
+<body>
 
-    <!-- Hình nền -->
-    <div class="background"></div>
-    <div class="background-overlay"></div>
-
-    <!-- Hiệu ứng mưa -->
-    <div class="rain rain-back"></div>
-    <div class="rain rain-front"></div>
-    <div class="fireflies" aria-hidden="true"></div>
-
-    <div class="page-content is-locked">
-      <main class="profile" aria-label="Hồ sơ của ygdvicc">
-        <div class="avatar-wrapper">
-            <div class="avatar-ring"></div>
-            <img
-                src="assets/avatar.png"
-                alt="Avatar của ygdvicc"
-                class="avatar"
-            >
-        </div>
-
-        <div class="name-line">
-            <h1>ygdvicc</h1>
-            <span class="profile-badges" aria-label="Huy hiệu xác minh">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2.8 21.2 12 12 21.2 2.8 12 12 2.8Z" />
-                    <path d="m8.5 12 2.2 2.2 4.8-5" />
-                </svg>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2.5 15 4l3.4.2.8 3.3 2.3 2.5-1.1 3.2.6 3.4-2.9 1.8-1.8 2.9-3.4-.6-3.2 1.1-2.5-2.3-3.3-.8L3.7 15 2.2 12l1.5-3 .2-3.4 3.3-.8 2.5-2.3 3.2 1.1Z" />
-                    <path d="m8.5 12 2.2 2.2 4.8-5" />
-                </svg>
-            </span>
-        </div>
-
-        <p class="profile-caption">I love Warfarin</p>
-    
-
-        <nav class="socials" aria-label="Mạng xã hội">
-            <a
-                href="https://discord.com/users/836486819847208962"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Discord"
-                title="Discord"
-            >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19.5 5.5A18 18 0 0 0 15 4l-.6 1.2a16 16 0 0 0-4.8 0L9 4a18 18 0 0 0-4.5 1.5C1.7 9.7 1 13.7 1.4 17.7A18 18 0 0 0 7 20l1.2-2a12 12 0 0 1-1.9-.9l.5-.4a13 13 0 0 0 10.4 0l.5.4a12 12 0 0 1-1.9.9l1.2 2a18 18 0 0 0 5.6-2.3c.5-4.7-.8-8.7-3.1-12.2ZM8.5 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z" />
-                </svg>
-            </a>
-            <a
-                href="https://www.instagram.com/dakts_yonko/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                title="Instagram"
-            >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="3" width="18" height="18" rx="5" />
-                    <circle cx="12" cy="12" r="4" />
-                    <circle class="instagram-dot" cx="17.5" cy="6.5" r="1.2" />
-                </svg>
-            </a>
-            <a
-                href="https://open.spotify.com/user/31seame67ltgommepqugu7xilvaq"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Spotify"
-                title="Spotify"
-            >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle class="spotify-disc" cx="12" cy="12" r="10" />
-                    <path d="M6 9 Q12 6 18 10 M7 12 Q12 10 17 13 M8 15 Q12 14 16 16" />
-                </svg>
-            </a>
-        </nav>
-      </main>
-
-      <section class="playlist" aria-label="Danh sách bài nhạc">
-          <div class="playlist-heading">
-              <div>
-                  <p class="playlist-eyebrow">NOW PLAYING</p>
-                  <h2>nghe mệt</h2>
-              </div>
-              <div class="playlist-actions">
-                  <span class="playlist-loop" aria-label="Tự động phát lại danh sách">
-                      <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3" />
-                      </svg>
-                      <span>LOOP</span>
-                  </span>
-                  <div class="volume-control">
-                      <button id="volume-toggle" class="volume-toggle" type="button" aria-label="Tắt tiếng" aria-pressed="false" aria-controls="volume-slider">
-                          <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path class="volume-speaker" d="M3 9v6h4l5 4V5L7 9H3Z" />
-                              <path class="volume-wave" d="M16 9a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" />
-                              <path class="volume-mute" d="m16 9 5 6m0-6-5 6" />
-                          </svg>
-                      </button>
-                      <input id="volume-slider" class="volume-slider" type="range" min="0" max="100" value="50" aria-label="Âm lượng" aria-valuetext="50%">
-                  </div>
-              </div>
-          </div>
-
-          <div class="track-list"></div>
-          <p id="player-status" class="player-status" aria-live="polite"></p>
-      </section>
+    <!-- ==========================================================================
+         1. MÀN HÌNH CHỜ: CHỈ LỚP MỜ VÀ CHỮ "BẤM ĐỂ XEM"
+         ========================================================================== -->
+    <div id="entry-screen" class="entry-screen" role="button" tabindex="0" aria-label="Bấm vào đây để vào trang và phát nhạc">
+        <span class="entry-text">bấm để xem</span>
     </div>
 
-    <button id="entry-gate" class="entry-gate" type="button" disabled>
-        <span>Bấm để xem...</span>
-    </button>
+    <!-- ==========================================================================
+         MÔI TRƯỜNG NỀN:
+         - Nền 1: background.jpg (Trang đầu)
+         - Nền 2: Zenless Zone Zero GIF.gif (Từ từ trượt từ trên xuống khi kéo xuống phần nhạc)
+         ========================================================================== -->
+    <div class="background background-primary" aria-hidden="true"></div>
+    <div class="background background-secondary" id="bg-secondary" aria-hidden="true"></div>
+    <div class="background-overlay" aria-hidden="true"></div>
+    <div class="rain rain-back" aria-hidden="true"></div>
+    <div class="rain rain-front" aria-hidden="true"></div>
+    <div class="fireflies" aria-hidden="true"></div>
 
-    <!-- Nhạc nền -->
+    <!-- ==========================================================================
+         2. THANH TOPBAR MỀM MẠI CỐ ĐỊNH KHI CUỘN TRANG
+         ========================================================================== -->
+    <header id="topbar" class="topbar">
+        <div class="topbar-inner">
+            <!-- Góc bên trái trên cùng: CHỈ HIỂN THỊ CÁC ICON MẠNG XÃ HỘI VỚI CHUYỂN ĐỘNG -->
+            <div class="topbar-socials" aria-label="Mạng xã hội">
+                <a href="https://discord.com/users/836486819847208962" target="_blank" rel="noopener noreferrer" class="social-icon-btn discord-btn" title="Discord" aria-label="Discord">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M19.5 5.5A18 18 0 0 0 15 4l-.6 1.2a16 16 0 0 0-4.8 0L9 4a18 18 0 0 0-4.5 1.5C1.7 9.7 1 13.7 1.4 17.7A18 18 0 0 0 7 20l1.2-2a12 12 0 0 1-1.9-.9l.5-.4a13 13 0 0 0 10.4 0l.5.4a12 12 0 0 1-1.9.9l1.2 2a18 18 0 0 0 5.6-2.3c.5-4.7-.8-8.7-3.1-12.2ZM8.5 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z" fill="currentColor"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/dakts_yonko/" target="_blank" rel="noopener noreferrer" class="social-icon-btn instagram-btn" title="Instagram" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle class="ig-dot" cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+                    </svg>
+                </a>
+                <a href="https://open.spotify.com/user/31seame67ltgommepqugu7xilvaq" target="_blank" rel="noopener noreferrer" class="social-icon-btn spotify-btn" title="Spotify" aria-label="Spotify">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                        <path d="M6 9 Q12 6 18 10 M7 12 Q12 10 17 13 M8 15 Q12 14 16 16" fill="none" stroke="#08101e" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Góc bên phải trên cùng: TÊN + AVATAR + GIF CÙNG KÍCH THƯỚC -->
+            <a href="#hero" id="topbar-profile" class="topbar-profile-pill" title="Cuộn lên đầu trang">
+                <span class="topbar-name">ygdvicc</span>
+                <!-- GIF cùng kích cỡ với avatar (Robin Looking Around GIF) -->
+                <div class="topbar-media-wrap topbar-gif-wrap" title="GIF cá nhân">
+                    <img src="assets/Robin%20Looking%20Around%20GIF.gif" alt="Robin GIF" class="topbar-media-img topbar-gif-img">
+                </div>
+            </a>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         3. NỘI DUNG CHÍNH (MAIN WRAPPER)
+         ========================================================================== -->
+    <main class="page-content">
+
+        <!-- ======================================================================
+             TRANG 1: HERO SECTION
+             THẺ NHÂN VIÊN (ID BADGE) CÓ DÂY ĐEO TREO TỪ TRÊN CÙNG WEB VÀ KÉO DÃN TƯƠNG TÁC
+             ====================================================================== -->
+        <section id="hero" class="hero-section">
+
+            <!-- Điểm neo dây đeo ở đầu trên cùng của web (top: 0) -->
+            <div class="lanyard-ceiling-anchor" id="lanyard-ceiling-anchor" aria-hidden="true">
+                <div class="lanyard-ceiling-bracket"></div>
+            </div>
+
+            <!-- SVG vẽ dây đeo kéo dãn linh hoạt từ đỉnh web xuống móc thẻ -->
+            <svg id="lanyard-svg" class="lanyard-svg" aria-hidden="true">
+                <defs>
+                    <linearGradient id="lanyardRibbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#071329"/>
+                        <stop offset="20%" stop-color="#1e3a6a"/>
+                        <stop offset="50%" stop-color="#10254c"/>
+                        <stop offset="80%" stop-color="#1e3a6a"/>
+                        <stop offset="100%" stop-color="#071329"/>
+                    </linearGradient>
+                    <filter id="lanyardDropShadow" x="-30%" y="-10%" width="160%" height="130%">
+                        <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="rgba(0,0,0,0.5)"/>
+                    </filter>
+                </defs>
+                <g filter="url(#lanyardDropShadow)">
+                    <!-- Dây chính tự động kéo dãn -->
+                    <path id="lanyard-strap-body" class="lanyard-strap-body" d="" fill="url(#lanyardRibbonGrad)"/>
+                    <!-- 2 viền dạ quang phát sáng -->
+                    <path id="lanyard-edge-left" class="lanyard-strap-edge" d="" fill="none" stroke="rgba(56, 189, 248, 0.65)" stroke-width="2"/>
+                    <path id="lanyard-edge-right" class="lanyard-strap-edge" d="" fill="none" stroke="rgba(56, 189, 248, 0.65)" stroke-width="2"/>
+                    <!-- Đường may chỉ giữa -->
+                    <path id="lanyard-stitch" class="lanyard-strap-stitch" d="" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" stroke-dasharray="6 5"/>
+                </g>
+            </svg>
+
+            <!-- Container thẻ nhân viên có hiệu ứng đung đưa và kéo thả vật lý -->
+            <div class="lanyard-container" id="lanyard-container">
+                <!-- Chiếc thẻ nhân viên (Employee ID Badge) có thể bấm và kéo di chuyển -->
+                <div class="profile-card employee-badge" id="employee-badge" role="region" aria-label="Thẻ nhân viên cá nhân (Bấm và kéo để tương tác)">
+                    
+                    <!-- Cụm móc kim loại gắn trực tiếp lên đỉnh thẻ -->
+                    <div class="lanyard-clip-assembly" aria-hidden="true">
+                        <div class="lanyard-metal-ring" id="lanyard-metal-ring"></div>
+                        <div class="lanyard-metal-clamp"></div>
+                    </div>
+
+                    <!-- Khe xỏ dây thẻ nhân viên -->
+                    <div class="badge-punch-hole" aria-hidden="true"></div>
+
+                    <!-- Thanh header thẻ: Tiêu đề thẻ + Trạng thái Steam "Đang hoạt động" -->
+                    <div class="badge-top-bar">
+                        <span class="badge-role-tag">STAFF // OPERATOR ID</span>
+                        
+                        <!-- Nút chấm màu xanh & hiển thị chữ 'Đang hoạt động' giống Steam -->
+                        <div class="steam-status-box" title="Trạng thái Steam: Đang hoạt động">
+                            <span class="steam-online-dot"></span>
+                            <span class="steam-online-text">Đang hoạt động</span>
+                        </div>
+                    </div>
+
+                    <!-- Avatar thẻ nhân viên -->
+                    <div class="avatar-container">
+                        <div class="avatar-glow-ring"></div>
+                        <img src="assets/avatar.png" alt="Avatar của ygdvicc" class="avatar-image">
+                    </div>
+
+                    <!-- Dòng tên và Huy hiệu xác minh -->
+                    <div class="name-row">
+                        <h1 class="profile-name">ygdvicc</h1>
+                        <span class="profile-badges" aria-label="Huy hiệu">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2.8 21.2 12 12 21.2 2.8 12 12 2.8Z" fill="currentColor"/>
+                                <path d="m8.5 12 2.2 2.2 4.8-5" stroke="#0b1325" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <div class="profile-bio-pill">
+                        I love Warfarin
+                    </div>
+
+                    <!-- Mã số ID và mã vạch bảo mật thẻ nhân viên -->
+                    <div class="badge-security-row" aria-hidden="true">
+                        <div class="badge-barcode"></div>
+                        <span class="badge-serial-no">ID: 0836-YG</span>
+                    </div>
+
+                    <!-- Các icon mạng xã hội trong card -->
+                    <div class="hero-socials">
+                        <a href="https://discord.com/users/836486819847208962" target="_blank" rel="noopener noreferrer" class="hero-social-link discord" title="Discord">
+                            <svg viewBox="0 0 24 24"><path d="M19.5 5.5A18 18 0 0 0 15 4l-.6 1.2a16 16 0 0 0-4.8 0L9 4a18 18 0 0 0-4.5 1.5C1.7 9.7 1 13.7 1.4 17.7A18 18 0 0 0 7 20l1.2-2a12 12 0 0 1-1.9-.9l.5-.4a13 13 0 0 0 10.4 0l.5.4a12 12 0 0 1-1.9.9l1.2 2a18 18 0 0 0 5.6-2.3c.5-4.7-.8-8.7-3.1-12.2ZM8.5 14.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z" fill="currentColor"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/dakts_yonko/" target="_blank" rel="noopener noreferrer" class="hero-social-link instagram" title="Instagram">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/user/31seame67ltgommepqugu7xilvaq" target="_blank" rel="noopener noreferrer" class="hero-social-link spotify" title="Spotify">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M6 9 Q12 6 18 10 M7 12 Q12 10 17 13 M8 15 Q12 14 16 16" fill="none" stroke="#0b1325" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút cuộn xuống -->
+            <a href="#music-section" id="scroll-cue" class="scroll-cue" aria-label="Cuộn xuống để nghe nhạc">
+                <span>Cuộn xuống nghe nhạc</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </section>
+
+        <!-- ======================================================================
+             TRANG 2: KHUNG NHẠC
+             BÊN TRÁI: ĐANG PHÁT & ẢNH 10S RANDOM | BÊN PHẢI: PLAYLIST
+             ====================================================================== -->
+        <section id="music-section" class="music-section">
+            <div class="music-grid-container">
+
+                <!-- BÊN TRÁI: KHUNG TO THÔNG BÁO ĐANG PHÁT & KHUNG HÌNH ẢNH TỰ CHẠY 10S -->
+                <div class="now-playing-panel" id="now-playing-panel">
+                    <div class="panel-badge-row">
+                        <span class="live-pill"><span class="pulse-dot"></span> ĐANG PHÁT</span>
+                        <span id="np-track-num" class="track-num-pill">#01</span>
+                    </div>
+
+                    <!-- Khung hiển thị hình ảnh ngẫu nhiên tự đổi mỗi 10 giây -->
+                    <div class="slideshow-frame" id="slideshow-frame" title="Hình ảnh trình chiếu ngẫu nhiên mỗi 10s">
+                        <img id="slideshow-img" src="assets/Zenless%20Zone%20Zero%20GIF.gif" alt="Art Slideshow" class="slideshow-img">
+                        <div class="slideshow-gradient"></div>
+                        <span class="slideshow-timer-badge">Auto Art • 10s</span>
+                    </div>
+
+                    <!-- Tiêu đề & tác giả bài hát đang phát -->
+                    <div class="np-track-meta">
+                        <h2 id="np-title" class="np-title">Đang tải bài hát...</h2>
+                        <p id="np-sub" class="np-sub">ygdvicc playlist</p>
+                    </div>
+
+                    <!-- Thanh tua tiến độ bài hát -->
+                    <div class="np-progress-wrap">
+                        <input type="range" id="np-progress" class="audio-slider" min="0" max="0" value="0" aria-label="Tiến độ bài hát">
+                        <div class="np-time-row">
+                            <span id="np-current-time">0:00</span>
+                            <span id="np-duration">0:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Cụm nút điều khiển & thanh âm lượng -->
+                    <div class="np-controls-box">
+                        <div class="np-playback-btns">
+                            <button id="np-prev-btn" class="ctrl-btn" type="button" title="Bài trước" aria-label="Bài trước">
+                                <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" fill="currentColor"/></svg>
+                            </button>
+                            <button id="np-play-btn" class="ctrl-btn main-play-btn" type="button" title="Phát / Dừng" aria-label="Phát / Dừng">
+                                <svg id="np-play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                            </button>
+                            <button id="np-next-btn" class="ctrl-btn" type="button" title="Bài tiếp theo" aria-label="Bài tiếp theo">
+                                <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z" fill="currentColor"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Điều chỉnh âm lượng -->
+                        <div class="np-volume-box">
+                            <button id="np-volume-toggle" class="vol-btn" type="button" title="Bật / Tắt tiếng" aria-label="Bật / Tắt tiếng">
+                                <svg id="np-vol-icon" viewBox="0 0 24 24">
+                                    <path d="M3 9v6h4l5 4V5L7 9H3z" fill="currentColor"/>
+                                    <path class="vol-wave" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            <input type="range" id="np-volume-slider" class="volume-slider" min="0" max="100" value="50" aria-label="Âm lượng">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÊN PHẢI: DANH SÁCH BÀI NHẠC -->
+                <div class="playlist-panel">
+                    <div class="playlist-panel-header">
+                        <div>
+                            <span class="playlist-subtitle">KHO NHẠC</span>
+                            <h3 class="playlist-title">Danh Sách Bài Nhạc</h3>
+                        </div>
+                        <span class="auto-loop-badge">↻ Tự động phát tiếp</span>
+                    </div>
+
+                    <!-- Danh sách các bài hát được render động từ assets/playlist.json -->
+                    <div class="track-list" id="track-list"></div>
+
+                    <p id="player-status" class="player-status-msg"></p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Thẻ âm thanh nhạc nền -->
     <audio id="background-music" preload="none"></audio>
 
     <script src="script.js"></script>

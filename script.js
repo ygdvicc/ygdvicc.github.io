@@ -1,239 +1,646 @@
-const backgroundMusic = document.querySelector("#background-music");
-const background = document.querySelector(".background");
-const profileCard = document.querySelector(".profile");
-const playerStatus = document.querySelector("#player-status");
-const trackList = document.querySelector(".track-list");
-const entryGate = document.querySelector("#entry-gate");
-const volumeToggle = document.querySelector("#volume-toggle");
-const volumeSlider = document.querySelector("#volume-slider");
-let trackCards = [];
-let tracks = [];
-let lastVolume = 0.5;
+// ==========================================================================
+// SCRIPT.JS - ĐIỀU KHIỂN ÂM THANH, SLIDESHOW 10S, ĐỔI NỀN MƯỢT MÀ & THẺ LANYARD
+// ==========================================================================
 
+const backgroundMusic = document.querySelector("#background-music");
+const background = document.querySelector(".background-primary");
+const bgSecondary = document.querySelector("#bg-secondary");
+const lanyardContainer = document.querySelector("#lanyard-container");
+const profileCard = document.querySelector(".profile-card");
+const employeeBadge = document.querySelector("#employee-badge");
+const metalRing = document.querySelector("#lanyard-metal-ring");
+const lanyardSvg = document.querySelector("#lanyard-svg");
+const lanyardStrapBody = document.querySelector("#lanyard-strap-body");
+const lanyardEdgeLeft = document.querySelector("#lanyard-edge-left");
+const lanyardEdgeRight = document.querySelector("#lanyard-edge-right");
+const lanyardStitch = document.querySelector("#lanyard-stitch");
+const heroSection = document.querySelector("#hero");
+const musicSection = document.querySelector("#music-section");
+const playerStatus = document.querySelector("#player-status");
+const trackList = document.querySelector("#track-list");
+
+// 1. MÀN HÌNH CHỜ "BẤM ĐỂ XEM"
+const entryScreen = document.querySelector("#entry-screen");
+
+// 2. KHUNG TO THÔNG BÁO ĐANG PHÁT (BÊN TRÁI)
+const nowPlayingPanel = document.querySelector("#now-playing-panel");
+const npTrackNum = document.querySelector("#np-track-num");
+const npTitle = document.querySelector("#np-title");
+const npProgress = document.querySelector("#np-progress");
+const npCurrentTime = document.querySelector("#np-current-time");
+const npDuration = document.querySelector("#np-duration");
+const npPlayBtn = document.querySelector("#np-play-btn");
+const npPlayIcon = document.querySelector("#np-play-icon");
+const npPrevBtn = document.querySelector("#np-prev-btn");
+const npNextBtn = document.querySelector("#np-next-btn");
+const npVolumeToggle = document.querySelector("#np-volume-toggle");
+const npVolIcon = document.querySelector("#np-vol-icon");
+const npVolumeSlider = document.querySelector("#np-volume-slider");
+
+// Khung ảnh trình chiếu 10s
+const slideshowImg = document.querySelector("#slideshow-img");
+
+// 3. TOPBAR KHI CUỘN XUỐNG
+const topbar = document.querySelector("#topbar");
+const topbarProfile = document.querySelector("#topbar-profile");
+const scrollCue = document.querySelector("#scroll-cue");
+
+let tracks = [];
+let trackCards = [];
+let galleryImages = [];
 let currentTrackIndex = 0;
+let lastVolume = 0.5;
 let isSeeking = false;
+let hasEntered = false;
+
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 backgroundMusic.volume = 0.5;
 backgroundMusic.preload = "none";
 
-function updateVolumeControl() {
-    const volumePercent = Math.round(backgroundMusic.volume * 100);
-    const isMuted = backgroundMusic.muted || backgroundMusic.volume === 0;
+// ==========================================================================
+// 1. XỬ LÝ MÀN HÌNH CHỜ: BẤM VÀO SẼ MỞ VÀ PHÁT NHẠC
+// ==========================================================================
 
-    volumeToggle.classList.toggle("is-muted", isMuted);
-    volumeToggle.setAttribute("aria-pressed", String(backgroundMusic.muted));
-    volumeToggle.setAttribute("aria-label", backgroundMusic.muted ? "Bật tiếng" : "Tắt tiếng");
-    volumeSlider.value = String(volumePercent);
-    volumeSlider.setAttribute("aria-valuetext", `${volumePercent}%`);
-    volumeSlider.style.setProperty("--volume", `${volumePercent}%`);
+function enterSite() {
+    if (hasEntered) return;
+    hasEntered = true;
+
+    // Phát bài nhạc đầu tiên
+    if (tracks.length > 0) {
+        void playTrack(currentTrackIndex);
+    }
+
+    if (entryScreen) {
+        entryScreen.classList.add("is-hidden");
+        setTimeout(() => {
+            entryScreen.style.display = "none";
+        }, 750);
+    }
 }
 
-volumeToggle.addEventListener("click", () => {
-    if (backgroundMusic.muted || backgroundMusic.volume === 0) {
-        if (backgroundMusic.volume === 0) {
-            backgroundMusic.volume = lastVolume || 0.5;
+if (entryScreen) {
+    entryScreen.addEventListener("click", enterSite);
+}
+
+// ==========================================================================
+// 2. TRÌNH CHIẾU HÌNH ẢNH NGẪU NHIÊN 10 GIÂY MỖI ẢNH (ASSETS/GALLERY.JSON)
+// ==========================================================================
+
+async function loadGallery() {
+    try {
+        const response = await fetch("assets/gallery.json");
+        if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+                galleryImages = data;
+            }
         }
+    } catch (e) {
+        console.warn("Dùng ảnh mặc định cho slideshow:", e);
+    }
+
+    if (!galleryImages.length) {
+        galleryImages = [
+            { src: "assets/Zenless%20Zone%20Zero%20GIF.gif" },
+            { src: "assets/Happy%20Robin%20GIF.gif" },
+            { src: "assets/Star%20Monitoring%20GIF.gif" },
+            { src: "assets/Robin%20Looking%20Around%20GIF.gif" },
+            { src: "assets/background.jpg" },
+            { src: "assets/avatar.png" }
+        ];
+    }
+}
+
+function rotateSlideshow() {
+    if (!slideshowImg || galleryImages.length <= 1) return;
+
+    const currentSrc = slideshowImg.getAttribute("src");
+    const otherImages = galleryImages.filter(img => img.src !== currentSrc);
+    const chosen = otherImages.length
+        ? otherImages[Math.floor(Math.random() * otherImages.length)]
+        : galleryImages[0];
+
+    // Chuyển cảnh mờ mềm mại
+    slideshowImg.classList.add("fade-out");
+    setTimeout(() => {
+        slideshowImg.src = chosen.src;
+        slideshowImg.onload = () => {
+            slideshowImg.classList.remove("fade-out");
+        };
+    }, 400);
+}
+
+void loadGallery().then(() => {
+    // Tự động đổi ngẫu nhiên mỗi 10 giây (10000ms)
+    setInterval(rotateSlideshow, 10000);
+});
+
+// ==========================================================================
+// 3. CHUYỂN ĐỔI BACKGROUND MƯỢT MÀ TỪ TRÊN XUỐNG KHI CUỘN XUỐNG PHẦN NHẠC
+// ==========================================================================
+
+function updateBackgroundOnScroll() {
+    if (!bgSecondary || !musicSection) return;
+
+    const scrollY = window.scrollY;
+    const heroHeight = (heroSection ? heroSection.offsetHeight : window.innerHeight) * 0.75;
+
+    // Tiến trình chuyển đổi từ 0 (ở trang 1) đến 1 (ở phần nhạc)
+    const progress = Math.min(Math.max((scrollY - 60) / heroHeight, 0), 1);
+
+    // Ảnh 2 trượt từ trên xuống và từ từ hiện ra
+    bgSecondary.style.opacity = progress.toFixed(3);
+    const translateY = ((1 - progress) * -50).toFixed(1);
+    bgSecondary.style.transform = `translateY(${translateY}px) scale(${1.02 + progress * 0.03})`;
+
+    // Kiểm tra hiển thị Topbar
+    if (topbar) {
+        const shouldShowTopbar = scrollY > 120;
+        topbar.classList.toggle("is-visible", shouldShowTopbar);
+    }
+}
+
+let scrollFrame;
+window.addEventListener("scroll", () => {
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
+    scrollFrame = requestAnimationFrame(updateBackgroundOnScroll);
+}, { passive: true });
+
+window.addEventListener("resize", updateBackgroundOnScroll, { passive: true });
+
+// ==========================================================================
+// 4. CHUYỂN ĐỘNG KÉO THẢ VẬT LÝ & DÂY ĐEO CO GIÃN TƯƠNG TÁC (LANYARD PHYSICS)
+// ==========================================================================
+
+let currentBadgeX = 0;
+let currentBadgeY = 0;
+let currentBadgeTilt = 0;
+let badgeVelX = 0;
+let badgeVelY = 0;
+let lanyardIdleTime = 0;
+let lanyardRestY = 160;
+
+// Trạng thái vật lý: "IDLE" (đung đưa nhẹ) | "DRAGGING" (bị kéo theo chuột) | "SPRING" (bật nảy đàn hồi)
+let lanyardState = "IDLE";
+
+let isBadgeDragging = false;
+let hasBadgeMoved = false;
+let activeBadgePointerId = null;
+
+let dragStartMouseX = 0;
+let dragStartMouseY = 0;
+let dragStartBadgeX = 0;
+let dragStartBadgeY = 0;
+
+let lastPointerPosX = 0;
+let lastPointerPosY = 0;
+let lastPointerTimestamp = 0;
+let pointerReleaseVelX = 0;
+let pointerReleaseVelY = 0;
+
+function calibrateLanyardMetrics() {
+    if (!heroSection || !metalRing) return;
+    const heroRect = heroSection.getBoundingClientRect();
+    const ringRect = metalRing.getBoundingClientRect();
+    // Đo khoảng cách thực tế từ đỉnh web (top: 0 của hero) tới khuyên móc kim loại
+    const measuredY = ringRect.top + ringRect.height / 2 - heroRect.top - currentBadgeY;
+    if (measuredY > 50) {
+        lanyardRestY = measuredY;
+    }
+}
+
+function drawDynamicLanyardStrap() {
+    if (!lanyardSvg || !metalRing || !heroSection || !lanyardStrapBody) return;
+
+    const heroRect = heroSection.getBoundingClientRect();
+    const ringRect = metalRing.getBoundingClientRect();
+
+    // Điểm neo trên cùng của web (top: 0 của hero, căn giữa)
+    const Ax = heroRect.width / 2;
+    const Ay = 0;
+
+    // Vị trí móc khuyên kim loại trên đỉnh thẻ
+    const Cx = ringRect.left + ringRect.width / 2 - heroRect.left;
+    const Cy = ringRect.top + 2 - heroRect.top;
+
+    const dx = Cx - Ax;
+    const dy = Cy - Ay;
+    const currentLength = Math.hypot(dx, dy) || 1;
+
+    // Véc-tơ đơn vị dọc theo dây
+    const ux = dx / currentLength;
+    const uy = dy / currentLength;
+
+    // Véc-tơ pháp tuyến vuông góc với dây
+    const nx = -uy;
+    const ny = ux;
+
+    // Bán kính bề rộng dây ruy-băng (11px chuẩn = bề rộng 22px)
+    // Hiệu ứng co dãn đàn hồi: khi kéo dãn dài hơn vị trí nghỉ, bề rộng dây co nhỏ nhẹ
+    const baseHalfWidth = 11;
+    let halfWidth = baseHalfWidth;
+    if (currentLength > lanyardRestY && lanyardRestY > 0) {
+        const stretchRatio = lanyardRestY / currentLength;
+        halfWidth = Math.max(7, baseHalfWidth * Math.sqrt(stretchRatio));
+    }
+
+    // Điểm uốn cong Bezier giữa dây
+    let Mx = (Ax + Cx) / 2;
+    let My = (Ay + Cy) / 2;
+
+    // Nếu đẩy thẻ lên phía trên (chùng dây), dây uốn lượn mềm mại
+    if (currentLength < lanyardRestY - 10) {
+        const slack = lanyardRestY - currentLength;
+        const sagAmount = Math.min(slack * 0.42, 55);
+        Mx += nx * sagAmount;
+        My += ny * sagAmount;
+    }
+
+    // Tọa độ 4 góc polygon ruy-băng
+    const p1x = (Ax - nx * halfWidth).toFixed(1);
+    const p1y = (Ay - ny * halfWidth).toFixed(1);
+    const p2x = (Cx - nx * halfWidth).toFixed(1);
+    const p2y = (Cy - ny * halfWidth).toFixed(1);
+    const p3x = (Cx + nx * halfWidth).toFixed(1);
+    const p3y = (Cy + ny * halfWidth).toFixed(1);
+    const p4x = (Ax + nx * halfWidth).toFixed(1);
+    const p4y = (Ay + ny * halfWidth).toFixed(1);
+
+    const mx1 = (Mx - nx * halfWidth).toFixed(1);
+    const my1 = (My - ny * halfWidth).toFixed(1);
+    const mx2 = (Mx + nx * halfWidth).toFixed(1);
+    const my2 = (My + ny * halfWidth).toFixed(1);
+
+    const bodyPath = `M ${p1x} ${p1y} Q ${mx1} ${my1} ${p2x} ${p2y} L ${p3x} ${p3y} Q ${mx2} ${my2} ${p4x} ${p4y} Z`;
+    const leftPath = `M ${p1x} ${p1y} Q ${mx1} ${my1} ${p2x} ${p2y}`;
+    const rightPath = `M ${p4x} ${p4y} Q ${mx2} ${my2} ${p3x} ${p3y}`;
+    const stitchPath = `M ${Ax.toFixed(1)} ${Ay.toFixed(1)} Q ${Mx.toFixed(1)} ${My.toFixed(1)} ${Cx.toFixed(1)} ${Cy.toFixed(1)}`;
+
+    lanyardStrapBody.setAttribute("d", bodyPath);
+    if (lanyardEdgeLeft) lanyardEdgeLeft.setAttribute("d", leftPath);
+    if (lanyardEdgeRight) lanyardEdgeRight.setAttribute("d", rightPath);
+    if (lanyardStitch) lanyardStitch.setAttribute("d", stitchPath);
+}
+
+function handleBadgePointerDown(event) {
+    if (event.button !== undefined && event.button !== 0 && event.pointerType === "mouse") return;
+    if (!employeeBadge) return;
+
+    isBadgeDragging = true;
+    hasBadgeMoved = false;
+    activeBadgePointerId = event.pointerId;
+
+    try {
+        employeeBadge.setPointerCapture(event.pointerId);
+    } catch (_) {}
+
+    dragStartMouseX = event.clientX;
+    dragStartMouseY = event.clientY;
+    dragStartBadgeX = currentBadgeX;
+    dragStartBadgeY = currentBadgeY;
+
+    lastPointerPosX = event.clientX;
+    lastPointerPosY = event.clientY;
+    lastPointerTimestamp = performance.now();
+    pointerReleaseVelX = 0;
+    pointerReleaseVelY = 0;
+
+    lanyardState = "DRAGGING";
+    employeeBadge.classList.add("is-dragging");
+}
+
+function handleBadgePointerMove(event) {
+    if (!isBadgeDragging || (activeBadgePointerId !== null && event.pointerId !== activeBadgePointerId)) return;
+
+    const deltaX = event.clientX - dragStartMouseX;
+    const deltaY = event.clientY - dragStartMouseY;
+
+    if (Math.hypot(deltaX, deltaY) > 5) {
+        hasBadgeMoved = true;
+    }
+
+    // Tính vận tốc vung tay khi kéo
+    const now = performance.now();
+    const dt = Math.max(now - lastPointerTimestamp, 1);
+    pointerReleaseVelX = ((event.clientX - lastPointerPosX) / dt) * 16.6;
+    pointerReleaseVelY = ((event.clientY - lastPointerPosY) / dt) * 16.6;
+    lastPointerPosX = event.clientX;
+    lastPointerPosY = event.clientY;
+    lastPointerTimestamp = now;
+
+    let targetX = dragStartBadgeX + deltaX;
+    let targetY = dragStartBadgeY + deltaY;
+
+    // Giới hạn đàn hồi khi đẩy lên quá đỉnh web
+    const maxUpward = -(lanyardRestY - 35);
+    if (targetY < maxUpward) {
+        targetY = maxUpward + (targetY - maxUpward) * 0.22;
+    }
+
+    // Khi kéo xuống dưới: chuyển động mượt mà và cho phép kéo dãn dây rất dài
+    if (targetY > 360) {
+        targetY = 360 + (targetY - 360) * 0.4;
+    }
+
+    // Giới hạn kéo ngang
+    if (Math.abs(targetX) > 320) {
+        targetX = Math.sign(targetX) * (320 + (Math.abs(targetX) - 320) * 0.3);
+    }
+
+    currentBadgeX = targetX;
+    currentBadgeY = targetY;
+
+    // Góc nghiêng tự nhiên của thẻ theo góc kéo dây
+    const effectiveHangingY = Math.max(lanyardRestY + currentBadgeY, 40);
+    const ropeAngleDeg = (Math.atan2(currentBadgeX, effectiveHangingY) * 180 / Math.PI);
+    const targetTilt = ropeAngleDeg * 0.72 + pointerReleaseVelX * 0.22;
+    currentBadgeTilt = Math.max(-28, Math.min(28, targetTilt));
+}
+
+function handleBadgePointerUp(event) {
+    if (!isBadgeDragging || (activeBadgePointerId !== null && event.pointerId !== activeBadgePointerId)) return;
+
+    isBadgeDragging = false;
+    try {
+        employeeBadge.releasePointerCapture(event.pointerId);
+    } catch (_) {}
+    activeBadgePointerId = null;
+
+    if (employeeBadge) {
+        employeeBadge.classList.remove("is-dragging");
+    }
+
+    // Chặn click nhầm vào các link trong thẻ khi đang thực hiện thao tác kéo
+    if (hasBadgeMoved) {
+        const suppressClickEvent = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        };
+        window.addEventListener("click", suppressClickEvent, { capture: true, once: true });
+        setTimeout(() => {
+            window.removeEventListener("click", suppressClickEvent, { capture: true });
+        }, 120);
+    }
+
+    // Chuyển sang trạng thái bật đàn hồi (Spring physics)
+    lanyardState = "SPRING";
+    badgeVelX = Math.max(-22, Math.min(22, pointerReleaseVelX * 0.85));
+    badgeVelY = Math.max(-22, Math.min(22, pointerReleaseVelY * 0.85));
+}
+
+function updateLanyardPhysics() {
+    if (lanyardState === "SPRING") {
+        // Hệ số lò xo đàn hồi (Stiffness) & ma sát không khí (Damping)
+        const springK = 0.062;
+        const damping = 0.83;
+
+        const forceX = -springK * currentBadgeX;
+        const forceY = -springK * currentBadgeY;
+
+        badgeVelX = (badgeVelX + forceX) * damping;
+        badgeVelY = (badgeVelY + forceY) * damping;
+
+        currentBadgeX += badgeVelX;
+        currentBadgeY += badgeVelY;
+
+        const effectiveHangingY = Math.max(lanyardRestY + currentBadgeY, 40);
+        const ropeAngleDeg = (Math.atan2(currentBadgeX, effectiveHangingY) * 180 / Math.PI) * 0.72;
+        currentBadgeTilt = ropeAngleDeg + badgeVelX * 0.32;
+
+        // Khi dao động tắt dần, chuyển về đung đưa nhẹ nhàn
+        if (Math.hypot(currentBadgeX, currentBadgeY, badgeVelX, badgeVelY) < 0.25) {
+            currentBadgeX = 0;
+            currentBadgeY = 0;
+            currentBadgeTilt = 0;
+            badgeVelX = 0;
+            badgeVelY = 0;
+            lanyardState = "IDLE";
+            lanyardIdleTime = 0;
+        }
+    } else if (lanyardState === "IDLE") {
+        if (!reduceMotion) {
+            lanyardIdleTime += 0.022;
+            // Đung đưa con lắc nhịp nhàng ±2.5 độ
+            const sway = Math.sin(lanyardIdleTime) * 2.5;
+            currentBadgeTilt = sway;
+            const hangDist = lanyardRestY || 160;
+            currentBadgeX = Math.sin(sway * Math.PI / 180) * (hangDist * 0.6);
+            currentBadgeY = (1 - Math.cos(sway * Math.PI / 180)) * 16;
+        } else {
+            currentBadgeX = 0;
+            currentBadgeY = 0;
+            currentBadgeTilt = 0;
+        }
+    }
+
+    if (employeeBadge) {
+        employeeBadge.style.transform = `translate3d(${currentBadgeX.toFixed(2)}px, ${currentBadgeY.toFixed(2)}px, 0) rotate(${currentBadgeTilt.toFixed(2)}deg)`;
+    }
+
+    drawDynamicLanyardStrap();
+
+    requestAnimationFrame(updateLanyardPhysics);
+}
+
+if (employeeBadge) {
+    employeeBadge.addEventListener("pointerdown", handleBadgePointerDown);
+    window.addEventListener("pointermove", handleBadgePointerMove, { passive: false });
+    window.addEventListener("pointerup", handleBadgePointerUp);
+    window.addEventListener("pointercancel", handleBadgePointerUp);
+
+    // Hiệu chỉnh độ dài ban đầu và khởi chạy vòng lặp vật lý
+    window.addEventListener("load", calibrateLanyardMetrics);
+    window.addEventListener("resize", calibrateLanyardMetrics);
+    setTimeout(calibrateLanyardMetrics, 100);
+
+    requestAnimationFrame(updateLanyardPhysics);
+}
+
+if (topbarProfile) {
+    topbarProfile.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: reduceMotion ? "auto" : "smooth",
+        });
+    });
+}
+
+if (scrollCue) {
+    scrollCue.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (musicSection) {
+            musicSection.scrollIntoView({
+                behavior: reduceMotion ? "auto" : "smooth",
+                block: "start",
+            });
+        }
+    });
+}
+
+// ==========================================================================
+// 5. ĐIỀU KHIỂN ÂM LƯỢNG
+// ==========================================================================
+
+function updateVolumeControls() {
+    const isMuted = backgroundMusic.muted || backgroundMusic.volume === 0;
+    const volumePercent = isMuted ? 0 : Math.round(backgroundMusic.volume * 100);
+
+    if (npVolumeSlider) {
+        npVolumeSlider.value = String(volumePercent);
+        npVolumeSlider.style.setProperty("--volume", `${volumePercent}%`);
+    }
+
+    if (npVolIcon) {
+        const wave = npVolIcon.querySelector(".vol-wave");
+        if (wave) {
+            wave.style.display = isMuted ? "none" : "block";
+        }
+        npVolIcon.style.opacity = isMuted ? "0.4" : "1";
+    }
+}
+
+function handleVolumeToggle() {
+    if (backgroundMusic.muted || backgroundMusic.volume === 0) {
+        backgroundMusic.volume = lastVolume > 0 ? lastVolume : 0.5;
         backgroundMusic.muted = false;
     } else {
         lastVolume = backgroundMusic.volume;
         backgroundMusic.muted = true;
     }
-
-    updateVolumeControl();
-});
-
-volumeSlider.addEventListener("input", () => {
-    backgroundMusic.volume = Number(volumeSlider.value) / 100;
-    backgroundMusic.muted = false;
-
-    if (backgroundMusic.volume > 0) {
-        lastVolume = backgroundMusic.volume;
-    }
-
-    updateVolumeControl();
-});
-
-updateVolumeControl();
-
-const canTrackPointer = window.matchMedia(
-    "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)"
-);
-
-if (canTrackPointer.matches) {
-    let pointerFrame;
-    let profileFrame;
-
-    window.addEventListener("pointermove", (event) => {
-        if (pointerFrame) {
-            cancelAnimationFrame(pointerFrame);
-        }
-
-        pointerFrame = requestAnimationFrame(() => {
-            const offsetX = (event.clientX / window.innerWidth - 0.5) * -18;
-            const offsetY = (event.clientY / window.innerHeight - 0.5) * -18;
-
-            background.style.setProperty("--pointer-x", `${offsetX}px`);
-            background.style.setProperty("--pointer-y", `${offsetY}px`);
-            background.style.setProperty("--pointer-scale", "1.05");
-        });
-    });
-
-    profileCard.addEventListener("pointermove", (event) => {
-        if (profileFrame) {
-            cancelAnimationFrame(profileFrame);
-        }
-
-        profileFrame = requestAnimationFrame(() => {
-            const bounds = profileCard.getBoundingClientRect();
-            const horizontal = (event.clientX - bounds.left) / bounds.width - 0.5;
-            const vertical = (event.clientY - bounds.top) / bounds.height - 0.5;
-
-            profileCard.style.setProperty("--tilt-x", `${horizontal * 3}deg`);
-            profileCard.style.setProperty("--tilt-y", `${vertical * -3}deg`);
-        });
-    });
-
-    profileCard.addEventListener("pointerleave", () => {
-        profileCard.style.setProperty("--tilt-x", "0deg");
-        profileCard.style.setProperty("--tilt-y", "0deg");
-    });
-
-    window.addEventListener("pointerleave", () => {
-        background.style.setProperty("--pointer-x", "0px");
-        background.style.setProperty("--pointer-y", "0px");
-        background.style.setProperty("--pointer-scale", "1");
-    });
+    updateVolumeControls();
 }
 
-function formatTime(time) {
-    if (!Number.isFinite(time)) {
+function handleVolumeSliderInput(value) {
+    const newVol = Number(value) / 100;
+    backgroundMusic.volume = newVol;
+    backgroundMusic.muted = newVol === 0;
+
+    if (newVol > 0) {
+        lastVolume = newVol;
+    }
+    updateVolumeControls();
+}
+
+if (npVolumeToggle) {
+    npVolumeToggle.addEventListener("click", handleVolumeToggle);
+}
+
+if (npVolumeSlider) {
+    npVolumeSlider.addEventListener("input", (e) => handleVolumeSliderInput(e.target.value));
+}
+
+updateVolumeControls();
+
+// ==========================================================================
+// 6. ĐỊNH DẠNG THỜI GIAN & TRẠNG THÁI
+// ==========================================================================
+
+function formatTime(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) {
         return "0:00";
     }
-
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-    return `${minutes}:${seconds}`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
 }
 
 function setPlayerStatus(message) {
+    if (!playerStatus) return;
     playerStatus.textContent = message;
-    playerStatus.classList.toggle("is-visible", Boolean(message));
+    playerStatus.style.display = message ? "block" : "none";
 }
 
+// ==========================================================================
+// 7. TẠO THẺ BÀI HÁT CHO DANH SÁCH BÊN PHẢI (PLAYLIST)
+// ==========================================================================
+
 function createTrackCard(track, index) {
-    const card = document.createElement("article");
-    card.className = "audio-player";
+    const card = document.createElement("div");
+    card.className = "track-card";
     card.dataset.trackIndex = String(index);
 
-    const artwork = document.createElement("div");
-    artwork.className = "track-art";
-    artwork.setAttribute("aria-hidden", "true");
+    const indexFormatted = String(index + 1).padStart(2, "0");
 
-    const waveform = document.createElement("span");
-    waveform.className = "waveform";
-    for (let bar = 0; bar < 15; bar += 1) {
-        waveform.append(document.createElement("span"));
-    }
-    artwork.append(waveform);
-
-    const content = document.createElement("div");
-    content.className = "player-content";
-
-    const title = document.createElement("h3");
-    title.className = "track-title";
-    title.textContent = track.title;
-
-    const controls = document.createElement("div");
-    controls.className = "player-controls";
-
-    const currentTime = document.createElement("span");
-    currentTime.className = "time-display current-time";
-    currentTime.textContent = "0:00";
-
-    const progress = document.createElement("input");
-    progress.className = "track-progress";
-    progress.type = "range";
-    progress.min = "0";
-    progress.max = "0";
-    progress.value = "0";
-    progress.disabled = true;
-    progress.setAttribute("aria-label", `Tiến độ bài ${track.title}`);
-
-    const duration = document.createElement("span");
-    duration.className = "time-display duration";
-    duration.textContent = "--:--";
-
-    const playButton = document.createElement("button");
-    playButton.className = "player-button play-button";
-    playButton.type = "button";
-    playButton.setAttribute("aria-label", `Phát ${track.title}`);
-    playButton.setAttribute("aria-pressed", "false");
-    playButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" /></svg>';
-
-    const repeat = document.createElement("span");
-    repeat.className = "track-repeat";
-    repeat.setAttribute("aria-hidden", "true");
-    repeat.textContent = "↻";
-
-    controls.append(currentTime, progress, duration, playButton, repeat);
-    content.append(title, controls);
-    card.append(artwork, content);
+    card.innerHTML = `
+        <div class="track-left-meta">
+            <span class="track-idx">#${indexFormatted}</span>
+            <div class="track-texts">
+                <h4 class="track-name" title="${track.title}">${track.title}</h4>
+                <span class="track-duration">Audio File</span>
+            </div>
+        </div>
+        <div class="track-right-meta">
+            <div class="track-mini-eq">
+                <span></span><span></span><span></span>
+            </div>
+            <button class="track-play-btn" type="button" aria-label="Phát ${track.title}">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            </button>
+        </div>
+    `;
 
     return card;
 }
 
 function updateTrackCards() {
-    const isPlaying = !backgroundMusic.paused;
+    const isPlaying = !backgroundMusic.paused && Boolean(backgroundMusic.src);
+    const activeTrack = tracks[currentTrackIndex];
 
+    // Cập nhật khung to bên trái (Now Playing Panel)
+    if (activeTrack) {
+        if (npTitle) npTitle.textContent = activeTrack.title;
+        if (npTrackNum) npTrackNum.textContent = `#${String(currentTrackIndex + 1).padStart(2, "0")}`;
+    }
+
+    if (npPlayIcon) {
+        npPlayIcon.innerHTML = isPlaying
+            ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>'
+            : '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+    }
+
+    const isActiveAndReady = Number.isFinite(backgroundMusic.duration);
+
+    if (npProgress) {
+        npProgress.disabled = !isActiveAndReady;
+        npProgress.max = isActiveAndReady ? String(backgroundMusic.duration) : "0";
+
+        if (!isSeeking) {
+            npProgress.value = isActiveAndReady ? String(backgroundMusic.currentTime) : "0";
+        }
+
+        const percent = isActiveAndReady ? (backgroundMusic.currentTime / backgroundMusic.duration) * 100 : 0;
+        npProgress.style.setProperty("--progress", `${percent}%`);
+    }
+
+    if (npCurrentTime) npCurrentTime.textContent = formatTime(backgroundMusic.currentTime);
+    if (npDuration) npDuration.textContent = isActiveAndReady ? formatTime(backgroundMusic.duration) : "--:--";
+
+    // Cập nhật danh sách thẻ bài hát bên phải
     trackCards.forEach((card, index) => {
         const isActive = index === currentTrackIndex;
-        const playButton = card.querySelector(".play-button");
-        const progress = card.querySelector(".track-progress");
-        const currentTime = card.querySelector(".current-time");
-        const duration = card.querySelector(".duration");
-        const isActiveAndReady = isActive && Number.isFinite(backgroundMusic.duration);
+        const playBtn = card.querySelector(".track-play-btn");
+        const svg = playBtn ? playBtn.querySelector("svg") : null;
 
         card.classList.toggle("is-active", isActive);
         card.classList.toggle("is-playing", isActive && isPlaying);
-        playButton.setAttribute("aria-pressed", String(isActive && isPlaying));
-        playButton.setAttribute(
-            "aria-label",
-            isActive && isPlaying ? `Tạm dừng ${tracks[index].title}` : `Phát ${tracks[index].title}`
-        );
-        playButton.innerHTML = isActive && isPlaying
-            ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z" /></svg>'
-            : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" /></svg>';
 
-        if (!isActive) {
-            progress.value = "0";
-            progress.max = "0";
-            progress.disabled = true;
-            progress.style.setProperty("--progress", "0%");
-            currentTime.textContent = "0:00";
-            duration.textContent = "--:--";
-            return;
+        if (svg) {
+            svg.innerHTML = isActive && isPlaying
+                ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>'
+                : '<path d="M8 5v14l11-7z" fill="currentColor"/>';
         }
-
-        progress.disabled = !isActiveAndReady;
-        progress.max = isActiveAndReady ? String(backgroundMusic.duration) : "0";
-        if (!isSeeking) {
-            progress.value = isActiveAndReady ? String(backgroundMusic.currentTime) : "0";
-        }
-        progress.style.setProperty(
-            "--progress",
-            isActiveAndReady
-                ? `${(backgroundMusic.currentTime / backgroundMusic.duration) * 100}%`
-                : "0%"
-        );
-        currentTime.textContent = formatTime(backgroundMusic.currentTime);
-        duration.textContent = isActiveAndReady ? formatTime(backgroundMusic.duration) : "--:--";
     });
 }
 
+// ==========================================================================
+// 8. PHÁT VÀ DỪNG NHẠC
+// ==========================================================================
+
 async function playTrack(index, { scroll = false } = {}) {
     if (!tracks[index]) {
-        setPlayerStatus("Không có bài nhạc để phát. Hãy kiểm tra tệp assets/playlist.json.");
+        setPlayerStatus("Không tìm thấy bài nhạc.");
         return;
     }
 
@@ -248,124 +655,121 @@ async function playTrack(index, { scroll = false } = {}) {
         backgroundMusic.currentTime = 0;
     }
 
+    // Hiệu ứng phản hồi nhẹ ở khung to bên trái khi chuyển bài
+    if (nowPlayingPanel) {
+        nowPlayingPanel.style.transform = "scale(1.015)";
+        setTimeout(() => {
+            nowPlayingPanel.style.transform = "none";
+        }, 300);
+    }
+
     updateTrackCards();
 
-    if (scroll) {
+    if (scroll && trackCards[index]) {
         trackCards[index].scrollIntoView({
             behavior: reduceMotion ? "auto" : "smooth",
-            block: "center",
+            block: "nearest",
         });
     }
 
     try {
         await backgroundMusic.play();
     } catch (error) {
-        if (error.name === "AbortError") {
-            return;
-        }
-
+        if (error.name === "AbortError") return;
         if (error.name === "NotAllowedError") {
-            setPlayerStatus("Trình duyệt chặn tự phát. Hãy bấm nút phát nhạc.");
+            setPlayerStatus("Hãy bấm 'bấm để xem' để cấp quyền âm thanh.");
+            return;
+        }
+        console.error("Lỗi phát nhạc:", error);
+        setPlayerStatus("Không thể mở tệp nhạc này.");
+        return;
+    }
+
+    updateTrackCards();
+}
+
+function toggleGlobalPlay() {
+    if (!tracks.length) return;
+
+    if (backgroundMusic.paused) {
+        void playTrack(currentTrackIndex);
+    } else {
+        backgroundMusic.pause();
+    }
+}
+
+if (npPlayBtn) {
+    npPlayBtn.addEventListener("click", toggleGlobalPlay);
+}
+
+if (npPrevBtn) {
+    npPrevBtn.addEventListener("click", () => {
+        if (!tracks.length) return;
+        const prev = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+        void playTrack(prev);
+    });
+}
+
+if (npNextBtn) {
+    npNextBtn.addEventListener("click", () => {
+        if (!tracks.length) return;
+        const next = (currentTrackIndex + 1) % tracks.length;
+        void playTrack(next);
+    });
+}
+
+if (npProgress) {
+    npProgress.addEventListener("input", (e) => {
+        if (!Number.isFinite(backgroundMusic.duration)) return;
+        isSeeking = true;
+        backgroundMusic.currentTime = Number(e.target.value);
+        updateTrackCards();
+    });
+
+    npProgress.addEventListener("change", () => {
+        isSeeking = false;
+        updateTrackCards();
+    });
+}
+
+// Sự kiện click trong danh sách bài hát bên phải
+if (trackList) {
+    trackList.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+
+        const card = event.target.closest(".track-card");
+        if (!card) return;
+
+        const index = Number(card.dataset.trackIndex);
+        if (!Number.isInteger(index) || !tracks[index]) return;
+
+        if (index === currentTrackIndex) {
+            toggleGlobalPlay();
             return;
         }
 
-        console.error("Không thể phát nhạc:", error);
-        setPlayerStatus("Không thể phát nhạc. Hãy kiểm tra tệp nhạc trong assets.");
-        return;
-    }
-
-    updateTrackCards();
+        void playTrack(index);
+    });
 }
 
-trackList.addEventListener("click", (event) => {
-    if (!(event.target instanceof Element)) {
-        return;
-    }
-
-    const playButton = event.target.closest(".play-button");
-    if (!playButton) {
-        return;
-    }
-
-    const card = playButton.closest(".audio-player");
-    const index = Number(card?.dataset.trackIndex);
-    if (!Number.isInteger(index) || !tracks[index]) {
-        return;
-    }
-
-    if (index === currentTrackIndex && !backgroundMusic.paused) {
-        backgroundMusic.pause();
-        return;
-    }
-
-    void playTrack(index);
-});
-
-trackList.addEventListener("input", (event) => {
-    if (!(event.target instanceof HTMLInputElement) || !event.target.matches(".track-progress")) {
-        return;
-    }
-
-    const card = event.target.closest(".audio-player");
-    const index = Number(card?.dataset.trackIndex);
-    if (index !== currentTrackIndex || !Number.isFinite(backgroundMusic.duration)) {
-        return;
-    }
-
-    isSeeking = true;
-    backgroundMusic.currentTime = Number(event.target.value);
-    updateTrackCards();
-});
-
-trackList.addEventListener("change", (event) => {
-    if (!(event.target instanceof HTMLInputElement) || !event.target.matches(".track-progress")) {
-        return;
-    }
-
-    isSeeking = false;
-    updateTrackCards();
-});
-
-function enterPage() {
-    entryGate.blur();
-    document.body.classList.add("has-entered");
-    document.body.classList.remove("is-locked");
-    document.querySelector(".page-content").classList.remove("is-locked");
-    entryGate.remove();
-}
-
-entryGate.addEventListener("click", () => {
-    if (tracks.length > 0) {
-        void playTrack(currentTrackIndex);
-    }
-
-    enterPage();
-});
+// ==========================================================================
+// 9. TẢI PLAYLIST TỪ ASSETS/PLAYLIST.JSON
+// ==========================================================================
 
 async function loadPlaylist() {
-    entryGate.disabled = true;
-
     try {
         const playlistUrl = new URL("assets/playlist.json", document.baseURI);
         const response = await fetch(playlistUrl);
-        if (!response.ok) {
-            throw new Error(`Không tải được playlist (HTTP ${response.status}).`);
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const playlist = await response.json();
         if (!Array.isArray(playlist) || playlist.length === 0) {
-            throw new Error("Playlist phải là một danh sách có ít nhất một bài nhạc.");
+            throw new Error("Playlist rỗng.");
         }
 
         tracks = playlist.map((track, index) => {
-            if (
-                !track
-                || typeof track.title !== "string"
-                || !track.title.trim()
-                || typeof track.src !== "string"
-                || !track.src.trim()
-            ) {
-                throw new Error(`Bài nhạc thứ ${index + 1} cần có title và src hợp lệ.`);
+            if (!track || !track.title || !track.src) {
+                throw new Error(`Bài nhạc thứ ${index + 1} thiếu title hoặc src.`);
             }
 
             return {
@@ -379,44 +783,53 @@ async function loadPlaylist() {
 
         trackCards = tracks.map(createTrackCard);
         trackList.replaceChildren(...trackCards);
+
         updateTrackCards();
     } catch (error) {
         console.error("Không thể tải playlist:", error);
-        setPlayerStatus("Không thể tải danh sách nhạc. Hãy kiểm tra tệp assets/playlist.json.");
-    } finally {
-        entryGate.disabled = false;
+        setPlayerStatus("Không thể tải danh sách bài hát.");
     }
 }
 
-entryGate.disabled = true;
 void loadPlaylist();
+
+// ==========================================================================
+// 10. AUDIO EVENT LISTENERS & AUTO-LOOP
+// ==========================================================================
 
 backgroundMusic.addEventListener("playing", updateTrackCards);
 backgroundMusic.addEventListener("pause", updateTrackCards);
 backgroundMusic.addEventListener("timeupdate", updateTrackCards);
 backgroundMusic.addEventListener("loadedmetadata", updateTrackCards);
 backgroundMusic.addEventListener("durationchange", updateTrackCards);
-backgroundMusic.addEventListener("ended", () => {
-    if (tracks.length === 0) {
-        return;
-    }
 
+backgroundMusic.addEventListener("ended", () => {
+    if (tracks.length === 0) return;
     const nextTrackIndex = (currentTrackIndex + 1) % tracks.length;
     void playTrack(nextTrackIndex, { scroll: true });
 });
+
 backgroundMusic.addEventListener("error", () => {
-    console.error("Không thể tải file nhạc:", backgroundMusic.currentSrc || tracks[currentTrackIndex].src);
-    setPlayerStatus("Không thể tải nhạc. Hãy kiểm tra tệp nhạc trong assets.");
+    console.error("Lỗi file nhạc:", backgroundMusic.currentSrc || tracks[currentTrackIndex]?.src);
+    setPlayerStatus("Không thể mở tệp nhạc này.");
     updateTrackCards();
 });
 
+// ==========================================================================
+// 11. HẠT MƯA VÀ ĐOM ĐÓM TỰ NHIÊN
+// ==========================================================================
+
 if (!reduceMotion) {
+    const rainBack = document.querySelector(".rain-back");
+    const rainFront = document.querySelector(".rain-front");
+
     const rainLayers = [
-        { element: document.querySelector(".rain-back"), count: 34, minDuration: 6.5, durationRange: 3.5 },
-        { element: document.querySelector(".rain-front"), count: 24, minDuration: 4.5, durationRange: 3 },
+        { element: rainBack, count: 28, minDuration: 6.5, durationRange: 3.5 },
+        { element: rainFront, count: 20, minDuration: 4.5, durationRange: 3 },
     ];
 
     for (const layer of rainLayers) {
+        if (!layer.element) continue;
         for (let index = 0; index < layer.count; index += 1) {
             const raindrop = document.createElement("span");
             const duration = layer.minDuration + Math.random() * layer.durationRange;
@@ -425,7 +838,7 @@ if (!reduceMotion) {
             raindrop.style.setProperty("--start-x", `${Math.random() * 105}%`);
             raindrop.style.setProperty("--width", `${1 + Math.random() * 1.1}px`);
             raindrop.style.setProperty("--length", `${12 + Math.random() * 14}px`);
-            raindrop.style.setProperty("--drop-opacity", `${0.45 + Math.random() * 0.5}`);
+            raindrop.style.setProperty("--drop-opacity", `${0.35 + Math.random() * 0.5}`);
             raindrop.style.setProperty("--drift", `${18 + Math.random() * 38}px`);
             raindrop.style.setProperty("--fall-duration", `${duration}s`);
             raindrop.style.setProperty("--fall-delay", `${-Math.random() * duration}s`);
@@ -434,21 +847,22 @@ if (!reduceMotion) {
     }
 
     const fireflies = document.querySelector(".fireflies");
-    const fireflyCount = 18;
+    if (fireflies) {
+        const fireflyCount = 16;
+        for (let index = 0; index < fireflyCount; index += 1) {
+            const firefly = document.createElement("span");
+            const duration = 10 + Math.random() * 12;
 
-    for (let index = 0; index < fireflyCount; index += 1) {
-        const firefly = document.createElement("span");
-        const duration = 10 + Math.random() * 12;
-
-        firefly.className = "firefly";
-        firefly.style.setProperty("--start-x", `${68 + Math.random() * 38}%`);
-        firefly.style.setProperty("--start-y", `${78 + Math.random() * 32}%`);
-        firefly.style.setProperty("--travel-x", `${-(window.innerWidth * (0.2 + Math.random() * 0.55))}px`);
-        firefly.style.setProperty("--travel-y", `${-(window.innerHeight * (0.45 + Math.random() * 0.55))}px`);
-        firefly.style.setProperty("--size", `${2 + Math.random() * 3}px`);
-        firefly.style.setProperty("--duration", `${duration}s`);
-        firefly.style.setProperty("--delay", `${-Math.random() * duration}s`);
-        firefly.style.setProperty("--glow-delay", `${-Math.random() * 2.4}s`);
-        fireflies.append(firefly);
+            firefly.className = "firefly";
+            firefly.style.setProperty("--start-x", `${65 + Math.random() * 40}%`);
+            firefly.style.setProperty("--start-y", `${75 + Math.random() * 35}%`);
+            firefly.style.setProperty("--travel-x", `${-(window.innerWidth * (0.2 + Math.random() * 0.55))}px`);
+            firefly.style.setProperty("--travel-y", `${-(window.innerHeight * (0.45 + Math.random() * 0.55))}px`);
+            firefly.style.setProperty("--size", `${2 + Math.random() * 3}px`);
+            firefly.style.setProperty("--duration", `${duration}s`);
+            firefly.style.setProperty("--delay", `${-Math.random() * duration}s`);
+            firefly.style.setProperty("--glow-delay", `${-Math.random() * 2.4}s`);
+            fireflies.append(firefly);
+        }
     }
 }
